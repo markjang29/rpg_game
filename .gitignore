@@ -1,0 +1,36 @@
+# Engine export / builds
+/build/
+/dist/
+/export/
+/bin/
+*.exe
+*.app
+*.apk
+*.obb
+
+# Godot
+.godot/
+*.import
+
+# Unity
+[Ll]ibrary/
+[Tt]emp/
+[Uu]nity[Gg]enerated/
+Obj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+*.unitypackage
+
+# Secrets
+.env
+*.key
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

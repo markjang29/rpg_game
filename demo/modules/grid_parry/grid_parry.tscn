@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://modules/grid_parry/grid_parry.gd" id="1_gp"]
+
+[node name="GridParry" type="Node2D"]
+script = ExtResource("1_gp")

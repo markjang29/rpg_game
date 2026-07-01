@@ -7,6 +7,7 @@
 *.app
 *.apk
 *.obb
+*.idsig
 
 # Godot
 .godot/
@@ -34,3 +35,4 @@ Obj/
 # OS
 .DS_Store
 Thumbs.db
+*.keystore

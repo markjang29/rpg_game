@@ -1,45 +1,50 @@
-# RPG Game (파랜드 택틱스풍 전술 RPG)
+# RPG Game — 걷기×전술 RPG
 
-> 파랜드 택틱스(Farland Tactics) 스타일의 턴제 그리드 전술 SRPG 제작 프로젝트.
-> 그리드/타일 기반 전투, 캐릭터 성장, 스토리 캠페인을 목표로 한다.
+> 걷기(입장 재화) + 전술 PvP/PvE + 로맨스 + 진영 분기 하이브리드 모바일 RPG.
+> 엔진: **Godot 4.7 (GDScript, GL Compatibility)** · 타겟: **모바일(Android 우선)**
 
 ## 상태
 
-- 초기 세팅 (2026-06-25)
-- 엔진/기술스택 미확정 (아래 결정 항목 참고)
+- 컨셉 수렴 완료 — `ideation/06-concept-convergence.md`, `07-color-dye-walking-system.md`
+- **모듈식 프로토타입 개발 진행 중** — `DEVELOPMENT.md` 참고
+- 첫 모듈(패링 손맛) 폰 검증 완료 (2026-07-01)
 
-## 결정해야 할 것
+## 개발 방식
 
-- [ ] 엔진: **Godot(권장, 경량·오픈소스)** / Unity(C#) / 웹(Phaser·PixiJS·TS)
-- [ ] 타겟 플랫폼: PC / 모바일 / 웹
-- [ ] 전투 시스템: 그리드 크기, 턴 구조, 행동순서(CT/속도)
-- [ ] 직업/스킬/성장 설계
-- [ ] 에셋 파이프라인 (스프라이트, 타일맵, 사운드)
-- [ ] 세계관 / 스토리 기획
+> **작은 모듈 단위 프로토타입 → 폰 검증 → 모듈 라이브러리 적립 → 본편 조립**
 
-## 협업 규칙 (중요)
+상세 원칙·컨벤션은 **[`DEVELOPMENT.md`](DEVELOPMENT.md)** 에. 핵심만:
+- 각 메커니즘을 독립 실행 가능한 모듈(`demo/modules/<이름>/`)로 먼저 만든다.
+- 세부 수치 튜닝은 본편 조립 시점으로 미룬다 (지금은 "작동·느낌 사는가?"까지만).
+- 모듈 현황: parry ✓ / walk·color-dye·territory·romance 예정
 
-이 프로젝트는 **여러 환경의 에이전트가 함께 작업**한다:
-
-- Linux 서버 (Claude Code)
-- Windows 머신 (별도 에이전트)
-
-원칙:
-
-1. 작업 전 반드시 `git pull`, 작업 후 즉시 `git push`.
-2. 커밋 메시지는 변경 내용을 명확히 서술한다 (한국어 OK).
-3. 중요 결정/설계는 `docs/` 에 문서화.
-4. 전반적인 작업 맥락과 일일 진행은 `notes` 저장소(`github.com/markjang29/notes`)에 기록.
-5. 대용량 바이너리(에셋)는 Git LFS 검토 또는 `data/` 분리.
-
-## 구조 (예정)
+## 구조
 
 ```
 rpg_game/
 ├── README.md
-├── .gitignore
-├── docs/          # 기획/설계 문서 (GDD)
-├── assets/        # 스프라이트, 타일셋, 사운드
-├── src/           # 게임 소스코드
-└── data/          # 데이터 파일 (맵, 직업, 스킬 정의)
+├── DEVELOPMENT.md          # 개발 방향·원칙
+├── ideation/               # 기획 아이디에이션 (01~07)
+└── demo/                   # Godot 프로젝트 (모듈 라이브러리)
+    ├── project.godot
+    ├── modules/            # 각 메커니즘 모듈 (독립 실행 가능)
+    │   └── parry/          #   패링 손맛 모듈
+    ├── shared/             # 모듈 공통 헬퍼 (FX, 사운드 재생기)
+    ├── assets/             # 공통 에셋 (sfx 등)
+    └── tools/              # 코드 생성 (사운드 합성 등)
 ```
+
+## 협업 규칙
+
+여러 환경의 에이전트가 함께 작업한다 (Linux 서버 + Windows 머신, 같은 repo 공유).
+
+1. 작업 전 반드시 `git pull`, 작업 후 즉시 `git push`.
+2. 커밋 메시지는 변경 내용 명확히 (한국어 OK).
+3. 중요 결정/설계는 이 repo의 `DEVELOPMENT.md`·`ideation/` 또는 `notes` 저장소(`github.com/markjang29/notes`)에 기록.
+4. 바이너리 산출물(`export/`, `*.apk`, `*.keystore`, `.godot/`)은 커밋 금지.
+
+## 결정 이력
+
+- 2026-06-25: 프로젝트 세팅
+- 2026-06-26: 걷기×전술 RPG 컨셉 1안 수렴 (색 염색 시스템 포함)
+- 2026-07-01: 엔진 Godot 4.7 확정 · 스토리(길 잇는/끊는 자) 폐기·재검토 · **모듈식 프로토타입 개발 방식 채택**

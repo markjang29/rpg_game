@@ -1,0 +1,42 @@
+;
+; Parry Demo — 전술 RPG 전투 손맛 테스트
+; Godot 4.7 / GL Compatibility / 세로 화면(폰)
+; 모듈식 구조: 진입 씬 = modules/parry/parry.tscn (DEVELOPMENT.md 참고)
+;
+config_version=5
+
+[application]
+
+config/name="Parry Demo"
+config/description="패링 손맛 데모 — 히트스톱·셰이크·파티클"
+run/main_scene="res://modules/parry/parry.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+FX="*res://shared/parry_fx.gd"
+SFX="*res://shared/sfx_player.gd"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+
+[input]
+
+parry={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"echo":false,"location":0), Object(InputEventScreenTouch,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"index":0,"pressed":false,"canceled":false), Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":0,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":false,"double_click":false)]
+}
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+textures/vram_compression/use_s3tc_bptc=true
+environment/defaults/default_clear_color=Color(0.039, 0.039, 0.078, 1)

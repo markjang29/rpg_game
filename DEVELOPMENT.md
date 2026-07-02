@@ -87,6 +87,8 @@ godot --headless --export-debug "Android" export/<Module>.apk
 | 모듈 | 상태 | 진입 | 비고 |
 |---|---|---|---|
 | **parry** (패링 손맛) | ✓ 작동·폰 검증 | `modules/parry/` | Perfect/Good/Miss 판정 + 히트스톱·셰이크·파티클·절차 사운드 |
+| **grid_parry** (그리드×패링) | ✓ 작동·폰 검증 | `modules/grid_parry/` | 5×6 그리드 턴 전술 + telegraph 예고 + 패링. `shared/` FX·SFX 재사용 첫 사례 |
+| **reasoning** (추론×전술) ⭐ | 🔨 진행 | `modules/reasoning/` | **시그니처 모듈**: 참모 추론 보고서 + 전제(목표함수) 토글 + 토큰 3단계 + 패링(손). `grid_parry` 위에 추론 레이어 얹음 (B안, `ideation/08` 참조) |
 | walk (걷기=재화) | 예정 | — | 3겹 캡, 입장 재화 (컨셉 수렴参照) |
 | color-dye (색 염색) | 예정 | — | 마비노기풍 표현층, 전투력 0 기여 |
 | territory (영토PvP) | 예정 | — | 진영 분기 (서사는 재검토 중) |

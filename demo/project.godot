@@ -9,7 +9,7 @@ config_version=5
 
 config/name="Parry Demo"
 config/description="패링 손맛 데모 — 히트스톱·셰이크·파티클"
-run/main_scene="res://modules/grid_parry/grid_parry.tscn"
+run/main_scene="res://modules/reasoning/reasoning.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

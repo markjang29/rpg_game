@@ -1,11 +1,9 @@
 # 걷기×전술 RPG
 
-<span class="hero-tag">🚶 걷기 = 입장재화</span>
-<span class="hero-tag">⚔️ Reasoning-Parry</span>
-<span class="hero-tag">🎮 한 판 체감</span>
+<span class="hero-tag">🚶 Walk-to-Play</span>
+<span class="hero-tag">⚔️ 사무라이 진검승부</span>
+<span class="hero-tag">🛡️ Reasoning-Parry</span>
 
-**걸어서 모은 입장재화로, 동기화된 전술 전투(PvP)와 지역 협동(PvE)을 즐기는 모바일 RPG.**
+**걷기가 전투의 "버틸 수 있는 시간(인내)"이 되고, 더 늦게까지 버티는 쪽이 심리적 우위를 점하며, 결정적 순간 패링이 확률을 역전하는 모바일 RPG.**
 
-걷기는 '성장·입장·표현'의 연료이지, **승패의 자원이 아닙니다.**
-
-> **전투 시그니처**: 캐릭터(참모)는 불완전한 추론 보고서로 작전안을 내놓고, 플레이어(지휘관)는 그것을 골라·고치고, 결정적 순간에는 직접 **패링** 입력으로 확률을 뒤집습니다.
+> **철학**: *"돈 내는 놈이 강한 건 양심 없지만, 걸은 놈이 강한 건 정당하다."* 과금 P2W가 아니라 **행동 = 전투력**.

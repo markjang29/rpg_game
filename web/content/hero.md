@@ -1,7 +1,11 @@
 # 걷기×전술 RPG
 
-걸어서 모은 입장재화로, 동기화된 전술 전투(PvP)와 지역 협동(PvE)을 즐기는 모바일 RPG
+<span class="hero-tag">🚶 걷기 = 입장재화</span>
+<span class="hero-tag">⚔️ Reasoning-Parry</span>
+<span class="hero-tag">🎮 한 판 체감</span>
 
-<span class="hero-tag">🚶‍♂️ 걷기 = 입장재화</span>
-<span class="hero-tag">⚔️ 전술 SRPG</span>
-<span class="hero-tag">🎨 표현 중심</span>
+**걸어서 모은 입장재화로, 동기화된 전술 전투(PvP)와 지역 협동(PvE)을 즐기는 모바일 RPG.**
+
+걷기는 '성장·입장·표현'의 연료이지, **승패의 자원이 아닙니다.**
+
+> **전투 시그니처**: 캐릭터(참모)는 불완전한 추론 보고서로 작전안을 내놓고, 플레이어(지휘관)는 그것을 골라·고치고, 결정적 순간에는 직접 **패링** 입력으로 확률을 뒤집습니다.

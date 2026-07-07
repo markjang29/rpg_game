@@ -36,3 +36,9 @@ Obj/
 .DS_Store
 Thumbs.db
 *.keystore
+
+# Python
+web/venv/
+web/server.log
+__pycache__/
+*.pyc

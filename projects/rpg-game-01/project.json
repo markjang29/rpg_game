@@ -1,0 +1,56 @@
+{
+  "schema_version": "rpg-project.v1",
+  "project_id": "rpg-game-01",
+  "project_number": 1,
+  "display_name": "RPG GAME 01",
+  "working_title": null,
+  "title_state": "blocked_pending_core_conspiracy",
+  "status": "approved_core_concept",
+  "decision_owner": "director",
+  "promoted_on": "2026-07-17",
+  "one_liner": "매일 걸어서 모은 예측 여유를 들고, 불완전한 AI 안내자와 함께 규칙이 서로 다른 창작 세계에 강제로 로드되어 적의 움직임과 서사를 읽고 살아남는 멀티버스 액션 RPG.",
+  "pillars": [
+    "forced_multiverse_world_loading",
+    "story_and_world_rule_inference",
+    "observation_driven_reasoning_parry",
+    "imperfect_ai_prediction_companion",
+    "walking_funded_prediction_buffer",
+    "cross_world_memory_ability_relationship_continuity",
+    "matrix_factory_as_diegetic_world_loader"
+  ],
+  "canonical_documents": {
+    "core_decision": "decisions/2026-07-17-core-concept.md",
+    "open_conspiracy_and_title": "decisions/OPEN-conspiracy-and-title.md",
+    "core_loop": "design/core-loop.md",
+    "combat": "design/combat-observation-system.md",
+    "walking_resource": "design/walk-prediction-buffer.md",
+    "continuity": "design/multiverse-continuity.md",
+    "matrix_boundary": "design/matrix-factory-boundary.md",
+    "legacy_sources": "legacy-source-map.md",
+    "team_boot": "TEAM-BOOT.md",
+    "backlog": "BACKLOG.md"
+  },
+  "open_decisions": [
+    "conspiracy_truth",
+    "forced_travel_reason",
+    "ai_guide_true_identity_and_agenda",
+    "original_reality_definition",
+    "save_abandon_world_consequence",
+    "game_title"
+  ],
+  "inherited_sources": [
+    "ideation/05-user-idea-walking-fitness-rpg.md",
+    "ideation/06-concept-convergence.md",
+    "ideation/08-reasoning-parry-signature.md",
+    "ideation/09-walk-to-play-combat.md",
+    "ideation/10-party-boss-blink-tell.md",
+    "ideation/11-advisor-score-system.md",
+    "ideation/DRAFT-matrix-scenario-factory-request.md",
+    "ideation/PRINCIPLE-instance-requires-director-confirm.md"
+  ],
+  "excluded_concepts": [
+    "manufacturing-coverup-B01"
+  ],
+  "implementation_state": "not_started",
+  "title_may_be_selected_when": "이사님이 핵심 음모와 공개 구조를 승인했을 때"
+}

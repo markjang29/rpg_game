@@ -10,6 +10,13 @@
 
 본편을 한 번에 짜지 않는다. 게임의 각 메커니즘(전투 손맛, 걷기, 영토, 로맨스 등)을 **독립된 실행 가능한 모듈**로 먼저 프로토타입하고, 폰에서 "느낌"을 검증한 뒤 **모듈 라이브러리**에 적립한다. 충분한 모듈이 검증되면 본편(통합 씬)에서 조립한다.
 
+### RPG GAME 01 제품 정본과 모듈의 관계
+
+- 제품의 세계관·서사·캐릭터·시스템 결정은 [`projects/rpg-game-01/`](projects/rpg-game-01/README.md)에 기록한다.
+- `demo/modules/`는 제품 결정의 체감을 검증하는 독립 실험장이다. 모듈이 작동한다는 이유만으로 RPG GAME 01 본편 채택이 되지는 않는다.
+- 기존 `ideation/`의 현행 여부는 [`projects/rpg-game-01/legacy-source-map.md`](projects/rpg-game-01/legacy-source-map.md)에서 판정한다.
+- RPG GAME 01의 구체 세계·캐릭터 인스턴스는 이사님 체감·승인 전 구현 입력으로 고정하지 않는다.
+
 ### 왜 이렇게 하는가
 - **손맛/체감은 머리로 설계되지 않는다** — 폰에서 만져봐야 안다. 작은 루프를 빨리 폰에 올려 검증.
 - **재사용** — 한 번 만든 모듈(FX 시스템, 판정 로직, 사운드 합성 등)은 본편 어디든 끌어다 쓴다.
@@ -40,7 +47,9 @@ rpg_game/
 ├── README.md
 ├── DEVELOPMENT.md          # 이 파일
 ├── .gitignore
-├── ideation/               # 기획 아이디에이션 (01~07)
+├── projects/
+│   └── rpg-game-01/        # 제품 정본·결정·설계·백로그
+├── ideation/               # 기획 아이디에이션·결정 이력 (01~11 및 WIP)
 ├── demo/                   # Godot 프로젝트 (모듈 라이브러리 + 본편)
 │   ├── project.godot
 │   ├── export_presets.cfg

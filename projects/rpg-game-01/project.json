@@ -51,6 +51,17 @@
   "excluded_concepts": [
     "manufacturing-coverup-B01"
   ],
-  "implementation_state": "not_started",
+  "implementation_state": "prototype_in_progress",
+  "implementation_milestones": {
+    "web_tactics_feel_slice": {
+      "status": "implemented_awaiting_director_feel_review",
+      "commit": "efc33413f567d7c9233f2a62f688a5b3937f86ad",
+      "route": "/prototype/tactics"
+    },
+    "godot_tactics_core": {
+      "status": "local_validation_in_progress",
+      "module": "demo/modules/tactics/"
+    }
+  },
   "title_may_be_selected_when": "이사님이 핵심 음모와 공개 구조를 승인했을 때"
 }

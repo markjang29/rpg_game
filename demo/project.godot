@@ -9,7 +9,7 @@ config_version=5
 
 config/name="Parry Demo"
 config/description="패링 손맛 데모 — 히트스톱·셰이크·파티클"
-run/main_scene="res://modules/reasoning/reasoning.tscn"
+run/main_scene="res://modules/tactics/tactics_battle.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -20,11 +20,11 @@ SFX="*res://shared/sfx_player.gd"
 
 [display]
 
-window/size/viewport_width=720
-window/size/viewport_height=1280
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/handheld/orientation=1
+window/handheld/orientation=0
 
 [input]
 

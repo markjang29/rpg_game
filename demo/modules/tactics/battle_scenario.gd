@@ -9,6 +9,11 @@ const CHAPTER_01 := {
 	"id": "chapter-01-sky-gate",
 	"title": "하늘에 남은 문",
 	"objective": "검은 성좌 격파",
+	"landmarks": [
+		{"id": "south-camp", "name": "남쪽 야영지", "x": 1, "y": 14, "color": "#65e4ee"},
+		{"id": "echo-bridge", "name": "메아리 다리", "x": 9, "y": 10, "color": "#f2ce68"},
+		{"id": "star-altar", "name": "별의 제단", "x": 17, "y": 3, "color": "#f26c6f"},
+	],
 	"matrix_contract": {
 		"world_id": "rpg-game-01",
 		"scene_id": "sky-ruins-gate",

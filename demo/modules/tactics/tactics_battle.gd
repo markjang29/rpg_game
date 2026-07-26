@@ -27,7 +27,9 @@ const BOARD_RIGHT := 952.0
 const TILE_WIDTH := 88.0
 const TILE_HEIGHT := 44.0
 const HEIGHT_STEP := 20.0
-const BOARD_ORIGIN := Vector2(470, 135)
+const MAP_VIEW_CENTER := Vector2(476, 350)
+const CAMERA_MIN_ZOOM := 0.42
+const CAMERA_MAX_ZOOM := 1.15
 const REACTION_DURATION := 3.0
 const PERFECT_START := 1.05
 const PERFECT_END := 1.85
@@ -51,6 +53,9 @@ var damage_popup := ""
 var damage_popup_position := Vector2.ZERO
 var damage_popup_alpha := 0.0
 var impact_flash := 0.0
+var camera_center_world := Vector2.ZERO
+var camera_zoom := 0.92
+var camera_dragging := false
 
 var round_label: Label
 var actor_label: Label
@@ -84,11 +89,16 @@ func _ready() -> void:
 	ui_font.variation_opentype = {"wght": 520}
 	_build_interface()
 	director.start(Scenario.chapter_01())
+	_focus_active_unit()
 	_show_dialogue()
 	_refresh()
 
 
 func _process(delta: float) -> void:
+	var camera_direction := Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	if camera_direction != Vector2.ZERO and not director.is_dialogue_active():
+		camera_center_world += camera_direction * (420.0 * delta / camera_zoom)
+		queue_redraw()
 	if impact_flash > 0.0:
 		impact_flash = maxf(0.0, impact_flash - delta * 5.0)
 		queue_redraw()
@@ -106,6 +116,29 @@ func _unhandled_input(event: InputEvent) -> void:
 		if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
 			_on_dialogue_next()
 			get_viewport().set_input_as_handled()
+			return
+	if event is InputEventMouseButton and event.position.x < BOARD_RIGHT:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+			_set_camera_zoom(camera_zoom + 0.10)
+			get_viewport().set_input_as_handled()
+			return
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+			_set_camera_zoom(camera_zoom - 0.10)
+			get_viewport().set_input_as_handled()
+			return
+		if event.button_index in [MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_RIGHT]:
+			camera_dragging = event.pressed
+			get_viewport().set_input_as_handled()
+			return
+	if event is InputEventMouseMotion and camera_dragging:
+		camera_center_world -= event.relative / camera_zoom
+		queue_redraw()
+		get_viewport().set_input_as_handled()
+		return
+	if event is InputEventScreenDrag and event.position.x < BOARD_RIGHT:
+		camera_center_world -= event.relative / camera_zoom
+		queue_redraw()
+		get_viewport().set_input_as_handled()
 		return
 	if event is InputEventMouseMotion:
 		hovered_cell = _cell_at_screen(event.position)
@@ -125,6 +158,7 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, Vector2(BOARD_RIGHT, VIEW_SIZE.y)), COLOR_BG)
 	_draw_atmosphere()
 	_draw_board()
+	_draw_landmarks()
 	_draw_units()
 	_draw_damage_popup()
 	if impact_flash > 0.0:
@@ -158,18 +192,18 @@ func _draw_board() -> void:
 		for unit: Dictionary in Core.targetable_enemies(state):
 			target_ids.append(unit["id"])
 
-	for depth in range((Core.BOARD_SIZE - 1) * 2 + 1):
-		for y in Core.BOARD_SIZE:
+	for depth in range(Core.BOARD_WIDTH + Core.BOARD_HEIGHT - 1):
+		for y in Core.BOARD_HEIGHT:
 			var x := depth - y
-			if x < 0 or x >= Core.BOARD_SIZE:
+			if x < 0 or x >= Core.BOARD_WIDTH:
 				continue
 			var cell := Vector2i(x, y)
-			var height: int = Core.TERRAIN[y][x]
+			var height: int = Core.terrain_height(x, y)
 			var center := _cell_to_screen(cell)
-			var extrusion := float(height) * HEIGHT_STEP
-			var left := center + Vector2(-TILE_WIDTH * 0.5, 0)
-			var right := center + Vector2(TILE_WIDTH * 0.5, 0)
-			var bottom := center + Vector2(0, TILE_HEIGHT * 0.5)
+			var extrusion := float(height) * HEIGHT_STEP * camera_zoom
+			var left := center + Vector2(-TILE_WIDTH * camera_zoom * 0.5, 0)
+			var right := center + Vector2(TILE_WIDTH * camera_zoom * 0.5, 0)
+			var bottom := center + Vector2(0, TILE_HEIGHT * camera_zoom * 0.5)
 			if extrusion > 0:
 				draw_colored_polygon(PackedVector2Array([
 					left, bottom, bottom + Vector2(0, extrusion), left + Vector2(0, extrusion)
@@ -188,7 +222,31 @@ func _draw_board() -> void:
 			draw_colored_polygon(diamond, top_color)
 			draw_polyline(PackedVector2Array([diamond[0], diamond[1], diamond[2], diamond[3], diamond[0]]), Color(1, 1, 1, 0.15), 1.0)
 			if height >= 1:
-				draw_circle(center, 2.2, Color(COLOR_GOLD, 0.55))
+				draw_circle(center, 2.2 * camera_zoom, Color(COLOR_GOLD, 0.55))
+
+
+func _draw_landmarks() -> void:
+	for landmark: Dictionary in director.scenario.get("landmarks", []):
+		var cell := Vector2i(landmark["x"], landmark["y"])
+		var center := _cell_to_screen(cell)
+		var color := Color(landmark.get("color", "#f2ce68"))
+		var pole_height := 48.0 * camera_zoom
+		draw_line(center + Vector2(0, 8), center + Vector2(0, -pole_height), color, maxf(1.5, 3.0 * camera_zoom))
+		draw_colored_polygon(PackedVector2Array([
+			center + Vector2(0, -pole_height),
+			center + Vector2(38.0 * camera_zoom, -pole_height + 10.0 * camera_zoom),
+			center + Vector2(0, -pole_height + 22.0 * camera_zoom),
+		]), Color(color, 0.84))
+		if camera_zoom >= 0.68:
+			draw_string(
+				ui_font,
+				center + Vector2(-70, -pole_height - 10),
+				landmark.get("name", ""),
+				HORIZONTAL_ALIGNMENT_CENTER,
+				140,
+				12,
+				COLOR_TEXT
+			)
 
 
 func _draw_units() -> void:
@@ -213,25 +271,27 @@ func _draw_units() -> void:
 		var is_active: bool = unit["id"] == active_id
 		var is_target: bool = unit["id"] in target_ids
 		draw_set_transform(base + Vector2(0, 8), 0.0, Vector2(1.4, 0.42))
-		draw_circle(Vector2.ZERO, 17, Color(0, 0, 0, 0.45))
+		draw_circle(Vector2.ZERO, 17 * camera_zoom, Color(0, 0, 0, 0.45))
 		draw_set_transform(Vector2.ZERO)
 		if is_active:
-			draw_arc(base + Vector2(0, 5), 28, 0, TAU, 40, COLOR_GOLD, 3)
+			draw_arc(base + Vector2(0, 5), 28 * camera_zoom, 0, TAU, 40, COLOR_GOLD, maxf(2.0, 3.0 * camera_zoom))
 		if is_target:
-			draw_arc(base + Vector2(0, 5), 31, 0, TAU, 40, COLOR_RED, 4)
+			draw_arc(base + Vector2(0, 5), 31 * camera_zoom, 0, TAU, 40, COLOR_RED, maxf(2.0, 4.0 * camera_zoom))
 		var unit_texture: Texture2D = UNIT_TEXTURES.get(unit["id"])
 		if unit_texture:
-			var sprite_size := 128.0 if unit["id"] == "boss" else 112.0
+			var sprite_size := (128.0 if unit["id"] == "boss" else 112.0) * camera_zoom
 			draw_texture_rect(
 				unit_texture,
-				Rect2(base + Vector2(-sprite_size * 0.5, 34.0 - sprite_size), Vector2(sprite_size, sprite_size)),
+				Rect2(base + Vector2(-sprite_size * 0.5, 34.0 * camera_zoom - sprite_size), Vector2(sprite_size, sprite_size)),
 				false
 			)
-		draw_rect(Rect2(base + Vector2(-19, 33), Vector2(38, 5)), Color("#090a0e"))
+		var hp_width := 38.0 * camera_zoom
+		draw_rect(Rect2(base + Vector2(-hp_width * 0.5, 33 * camera_zoom), Vector2(hp_width, maxf(3.0, 5 * camera_zoom))), Color("#090a0e"))
 		var hp_ratio: float = float(unit["hp"]) / float(unit["max_hp"])
-		draw_rect(Rect2(base + Vector2(-18, 34), Vector2(36 * hp_ratio, 3)), Color("#6ee18a") if unit["team"] == "ally" else COLOR_RED)
-		var name_color := COLOR_CYAN if unit["team"] == "ally" else Color("#f2a2a2")
-		draw_string(ui_font, base + Vector2(-36, -29), unit["name"], HORIZONTAL_ALIGNMENT_CENTER, 72, 12, name_color)
+		draw_rect(Rect2(base + Vector2(-hp_width * 0.47, 34 * camera_zoom), Vector2(hp_width * 0.94 * hp_ratio, maxf(2.0, 3 * camera_zoom))), Color("#6ee18a") if unit["team"] == "ally" else COLOR_RED)
+		if camera_zoom >= 0.64:
+			var name_color := COLOR_CYAN if unit["team"] == "ally" else Color("#f2a2a2")
+			draw_string(ui_font, base + Vector2(-36, -29 * camera_zoom), unit["name"], HORIZONTAL_ALIGNMENT_CENTER, 72, maxi(10, roundi(12 * camera_zoom)), name_color)
 
 
 func _draw_damage_popup() -> void:
@@ -271,6 +331,13 @@ func _build_interface() -> void:
 	divider.size = Vector2(1, VIEW_SIZE.y)
 	divider.color = Color(COLOR_GOLD, 0.35)
 	layer.add_child(divider)
+
+	_label(layer, Vector2(28, 78), Vector2(420, 18), 11, COLOR_MUTED).text = "우클릭·가운데 드래그 / 손가락 드래그 / 휠·버튼 줌"
+	_button(layer, "−", Vector2(28, 102), Vector2(44, 34), _on_zoom_out)
+	_button(layer, "전체", Vector2(78, 102), Vector2(76, 34), _on_fit_map)
+	_button(layer, "추적", Vector2(160, 102), Vector2(76, 34), _focus_active_unit)
+	_button(layer, "+", Vector2(242, 102), Vector2(44, 34), _on_zoom_in)
+	_button(layer, "전체화면", Vector2(292, 102), Vector2(108, 34), _on_fullscreen)
 
 	round_label = _label(layer, Vector2(980, 24), Vector2(270, 24), 13, COLOR_GOLD)
 	actor_label = _label(layer, Vector2(980, 64), Vector2(270, 42), 29, COLOR_TEXT)
@@ -490,6 +557,7 @@ func _on_restart() -> void:
 	visual_offsets.clear()
 	damage_popup = ""
 	director.start(Scenario.chapter_01())
+	_focus_active_unit()
 	_show_dialogue()
 	_refresh()
 
@@ -576,19 +644,23 @@ func _animate_hit(target_id: String, damage: int) -> void:
 	)
 
 
-func _cell_to_screen(cell: Vector2i) -> Vector2:
-	var height: int = Core.TERRAIN[cell.y][cell.x]
-	return BOARD_ORIGIN + Vector2(
+func _cell_to_world(cell: Vector2i) -> Vector2:
+	var height: int = Core.terrain_height(cell.x, cell.y)
+	return Vector2(
 		float(cell.x - cell.y) * TILE_WIDTH * 0.5,
 		float(cell.x + cell.y) * TILE_HEIGHT * 0.5 - float(height) * HEIGHT_STEP
 	)
 
 
+func _cell_to_screen(cell: Vector2i) -> Vector2:
+	return MAP_VIEW_CENTER + (_cell_to_world(cell) - camera_center_world) * camera_zoom
+
+
 func _cell_at_screen(screen_point: Vector2) -> Vector2i:
-	for depth in range((Core.BOARD_SIZE - 1) * 2, -1, -1):
-		for y in range(Core.BOARD_SIZE - 1, -1, -1):
+	for depth in range(Core.BOARD_WIDTH + Core.BOARD_HEIGHT - 2, -1, -1):
+		for y in range(Core.BOARD_HEIGHT - 1, -1, -1):
 			var x := depth - y
-			if x < 0 or x >= Core.BOARD_SIZE:
+			if x < 0 or x >= Core.BOARD_WIDTH:
 				continue
 			var cell := Vector2i(x, y)
 			if Geometry2D.is_point_in_polygon(screen_point, _diamond(_cell_to_screen(cell))):
@@ -598,11 +670,56 @@ func _cell_at_screen(screen_point: Vector2) -> Vector2i:
 
 func _diamond(center: Vector2) -> PackedVector2Array:
 	return PackedVector2Array([
-		center + Vector2(0, -TILE_HEIGHT * 0.5),
-		center + Vector2(TILE_WIDTH * 0.5, 0),
-		center + Vector2(0, TILE_HEIGHT * 0.5),
-		center + Vector2(-TILE_WIDTH * 0.5, 0),
+		center + Vector2(0, -TILE_HEIGHT * camera_zoom * 0.5),
+		center + Vector2(TILE_WIDTH * camera_zoom * 0.5, 0),
+		center + Vector2(0, TILE_HEIGHT * camera_zoom * 0.5),
+		center + Vector2(-TILE_WIDTH * camera_zoom * 0.5, 0),
 	])
+
+
+func _set_camera_zoom(next_zoom: float) -> void:
+	camera_zoom = clampf(next_zoom, CAMERA_MIN_ZOOM, CAMERA_MAX_ZOOM)
+	queue_redraw()
+
+
+func _on_zoom_in() -> void:
+	_set_camera_zoom(camera_zoom + 0.12)
+
+
+func _on_zoom_out() -> void:
+	_set_camera_zoom(camera_zoom - 0.12)
+
+
+func _focus_active_unit() -> void:
+	var actor := Core.active_unit(state)
+	if actor.is_empty():
+		return
+	camera_center_world = _cell_to_world(Vector2i(actor["x"], actor["y"]))
+	camera_zoom = maxf(camera_zoom, 0.82)
+	queue_redraw()
+
+
+func _on_fit_map() -> void:
+	var corners := [
+		_cell_to_world(Vector2i(0, 0)),
+		_cell_to_world(Vector2i(Core.BOARD_WIDTH - 1, 0)),
+		_cell_to_world(Vector2i(0, Core.BOARD_HEIGHT - 1)),
+		_cell_to_world(Vector2i(Core.BOARD_WIDTH - 1, Core.BOARD_HEIGHT - 1)),
+	]
+	var min_point: Vector2 = corners[0]
+	var max_point: Vector2 = corners[0]
+	for point: Vector2 in corners:
+		min_point = Vector2(minf(min_point.x, point.x), minf(min_point.y, point.y))
+		max_point = Vector2(maxf(max_point.x, point.x), maxf(max_point.y, point.y))
+	camera_center_world = (min_point + max_point) * 0.5
+	var map_size := max_point - min_point + Vector2(TILE_WIDTH * 2.0, TILE_HEIGHT * 5.0)
+	camera_zoom = clampf(minf((BOARD_RIGHT - 40.0) / map_size.x, (VIEW_SIZE.y - 70.0) / map_size.y), CAMERA_MIN_ZOOM, 0.82)
+	queue_redraw()
+
+
+func _on_fullscreen() -> void:
+	var is_fullscreen := DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED if is_fullscreen else DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 
 func _unit_id_at(cell: Vector2i) -> String:

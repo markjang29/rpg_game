@@ -12,11 +12,11 @@ func _init() -> void:
 	check(state["phase"] == "move", "첫 단계는 이동")
 
 	var cells: Array[Vector2i] = Core.reachable_cells(state)
-	check(Vector2i(2, 5) in cells, "고저차를 반영한 이동 가능 칸")
-	check(Vector2i(6, 1) not in cells, "원거리 칸 이동 불가")
+	check(Vector2i(3, 13) in cells, "고저차를 반영한 이동 가능 칸")
+	check(Vector2i(17, 3) not in cells, "원거리 칸 이동 불가")
 
-	state = Core.move_active_unit(state, Vector2i(2, 5))
-	check(Core.active_unit(state)["x"] == 2, "아리아 x 이동")
+	state = Core.move_active_unit(state, Vector2i(3, 13))
+	check(Core.active_unit(state)["x"] == 3, "아리아 x 이동")
 	check(state["phase"] == "action", "이동 후 행동 선택")
 
 	state = Core.select_action(state, "skill")
@@ -29,8 +29,10 @@ func _init() -> void:
 	check(Core.active_unit(state)["id"] == "lancer", "적 턴으로 진행")
 	check(state["phase"] == "enemy_ready", "적 준비 단계")
 
+	var lancer_before := Vector2i(Core.active_unit(state)["x"], Core.active_unit(state)["y"])
 	state = Core.begin_enemy_turn(state)
 	check(state["phase"] == "enemy_predict", "MIRA 예측 단계")
+	check(Vector2i(Core.active_unit(state)["x"], Core.active_unit(state)["y"]) != lancer_before, "원거리 적의 자동 전진")
 	state = Core.begin_reaction(state)
 	state = Core.resolve_reaction(state, "perfect")
 	check(Core.unit_by_id(state, "aria")["hp"] == 8, "퍼펙트 패링 피해 0")

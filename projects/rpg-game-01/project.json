@@ -68,7 +68,9 @@
       "status": "deployed_awaiting_director_feel_review",
       "scenario": "demo/modules/tactics/battle_scenario.gd",
       "director": "demo/modules/tactics/battle_director.gd",
-      "assets": "demo/assets/tactics/chapter01/"
+      "assets": "demo/assets/tactics/chapter01/",
+      "board": "20x16",
+      "camera_controls": ["drag", "touch_drag", "wheel_zoom", "fit_map", "focus_actor", "fullscreen"]
     }
   },
   "title_may_be_selected_when": "이사님이 핵심 음모와 공개 구조를 승인했을 때"

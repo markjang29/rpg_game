@@ -5,29 +5,19 @@ extends RefCounted
 ## 화면 노드와 입력 장치에 의존하지 않는다. 웹 체감판과 같은 전투 규칙을
 ## Godot에서 재현하고, 이후 Matrix 어댑터가 주입할 데이터 경계를 만든다.
 
-const BOARD_SIZE := 8
-
-const TERRAIN := [
-	[0, 0, 0, 0, 1, 1, 2, 2],
-	[0, 0, 0, 0, 1, 1, 2, 2],
-	[0, 0, 0, 1, 1, 1, 1, 1],
-	[0, 0, 0, 1, 1, 1, 1, 1],
-	[0, 0, 0, 0, 1, 1, 1, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0],
-]
+const BOARD_WIDTH := 20
+const BOARD_HEIGHT := 16
 
 const TURN_ORDER := ["aria", "lancer", "kael", "rogue", "sena", "archer", "boss"]
 
 const UNIT_BLUEPRINTS := [
-	{"id": "aria", "name": "아리아", "job": "검사", "team": "ally", "x": 1, "y": 6, "hp": 8, "max_hp": 8, "move": 3, "range": 1, "power": 3, "color": Color("#55d9ef")},
-	{"id": "kael", "name": "카엘", "job": "수호기사", "team": "ally", "x": 2, "y": 7, "hp": 11, "max_hp": 11, "move": 2, "range": 1, "power": 2, "color": Color("#e8c75b")},
-	{"id": "sena", "name": "세나", "job": "마도사", "team": "ally", "x": 0, "y": 7, "hp": 6, "max_hp": 6, "move": 2, "range": 4, "power": 4, "color": Color("#ec6a79")},
-	{"id": "lancer", "name": "흑창병", "job": "창병", "team": "enemy", "x": 4, "y": 4, "hp": 6, "max_hp": 6, "move": 2, "range": 2, "power": 2, "color": Color("#87576b")},
-	{"id": "rogue", "name": "회색 가면", "job": "척후", "team": "enemy", "x": 5, "y": 3, "hp": 5, "max_hp": 5, "move": 3, "range": 1, "power": 2, "color": Color("#9a8f99")},
-	{"id": "archer", "name": "석궁병", "job": "사수", "team": "enemy", "x": 6, "y": 4, "hp": 5, "max_hp": 5, "move": 2, "range": 4, "power": 2, "color": Color("#b7635e")},
-	{"id": "boss", "name": "검은 성좌", "job": "집행자", "team": "enemy", "x": 6, "y": 1, "hp": 12, "max_hp": 12, "move": 2, "range": 2, "power": 3, "color": Color("#d39b38")},
+	{"id": "aria", "name": "아리아", "job": "검사", "team": "ally", "x": 2, "y": 14, "hp": 8, "max_hp": 8, "move": 4, "range": 1, "power": 3, "color": Color("#55d9ef")},
+	{"id": "kael", "name": "카엘", "job": "수호기사", "team": "ally", "x": 1, "y": 15, "hp": 11, "max_hp": 11, "move": 3, "range": 1, "power": 2, "color": Color("#e8c75b")},
+	{"id": "sena", "name": "세나", "job": "마도사", "team": "ally", "x": 0, "y": 14, "hp": 6, "max_hp": 6, "move": 3, "range": 4, "power": 4, "color": Color("#ec6a79")},
+	{"id": "lancer", "name": "흑창병", "job": "창병", "team": "enemy", "x": 5, "y": 12, "hp": 6, "max_hp": 6, "move": 3, "range": 2, "power": 2, "color": Color("#87576b")},
+	{"id": "rogue", "name": "회색 가면", "job": "척후", "team": "enemy", "x": 9, "y": 10, "hp": 5, "max_hp": 5, "move": 4, "range": 1, "power": 2, "color": Color("#9a8f99")},
+	{"id": "archer", "name": "석궁병", "job": "사수", "team": "enemy", "x": 13, "y": 7, "hp": 5, "max_hp": 5, "move": 3, "range": 4, "power": 2, "color": Color("#b7635e")},
+	{"id": "boss", "name": "검은 성좌", "job": "집행자", "team": "enemy", "x": 17, "y": 3, "hp": 12, "max_hp": 12, "move": 3, "range": 2, "power": 3, "color": Color("#d39b38")},
 ]
 
 
@@ -56,7 +46,17 @@ static func active_unit(state: Dictionary) -> Dictionary:
 
 
 static func is_inside(x: int, y: int) -> bool:
-	return x >= 0 and y >= 0 and x < BOARD_SIZE and y < BOARD_SIZE
+	return x >= 0 and y >= 0 and x < BOARD_WIDTH and y < BOARD_HEIGHT
+
+
+static func terrain_height(x: int, y: int) -> int:
+	if x >= 14 and y <= 5:
+		return 2
+	if x >= 7 and y <= 12:
+		return 1
+	if (x == 4 or x == 5) and y >= 10 and y <= 12:
+		return 1
+	return 0
 
 
 static func distance(a: Dictionary, b: Dictionary) -> int:
@@ -88,7 +88,7 @@ static func reachable_cells(state: Dictionary, requested_unit: Dictionary = {}) 
 				continue
 			if occupied(state, next_cell.x, next_cell.y, unit["id"]):
 				continue
-			var height_cost: int = absi(TERRAIN[next_cell.y][next_cell.x] - TERRAIN[cell.y][cell.x])
+			var height_cost: int = absi(terrain_height(next_cell.x, next_cell.y) - terrain_height(cell.x, cell.y))
 			if height_cost > 1:
 				continue
 			var cost: int = current["cost"] + 1 + height_cost
@@ -178,9 +178,40 @@ static func begin_enemy_turn(state: Dictionary) -> Dictionary:
 	if active_unit(state).get("team", "") != "enemy":
 		return state
 	var next := state.duplicate(true)
+	_move_enemy_toward_nearest(next)
+	var enemy := active_unit(next)
+	var targets := targetable_enemies(next, "attack")
+	if targets.is_empty():
+		next["last_event"] = "%s이 전장을 가로질러 전진했다." % enemy["name"]
+		return end_turn(next)
 	next["phase"] = "enemy_predict"
-	next["last_event"] = "%s이 자세를 낮춘다." % active_unit(next)["name"]
+	next["last_event"] = "%s이 자세를 낮춘다." % enemy["name"]
 	return next
+
+
+static func _move_enemy_toward_nearest(state: Dictionary) -> void:
+	var enemy := active_unit(state)
+	var allies: Array[Dictionary] = []
+	for unit: Dictionary in state["units"]:
+		if unit["team"] == "ally" and unit["hp"] > 0:
+			allies.append(unit)
+	if allies.is_empty():
+		return
+	allies.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return distance(enemy, a) < distance(enemy, b))
+	var target := allies[0]
+	if distance(enemy, target) <= enemy["range"]:
+		return
+	var candidates := reachable_cells(state, enemy)
+	candidates.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		var distance_a := absi(a.x - int(target["x"])) + absi(a.y - int(target["y"]))
+		var distance_b := absi(b.x - int(target["x"])) + absi(b.y - int(target["y"]))
+		return distance_a < distance_b
+	)
+	if candidates.is_empty():
+		return
+	var destination: Vector2i = candidates[0]
+	enemy["x"] = destination.x
+	enemy["y"] = destination.y
 
 
 static func begin_reaction(state: Dictionary) -> Dictionary:

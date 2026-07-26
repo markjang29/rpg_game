@@ -4,6 +4,7 @@ extends Node2D
 ## TacticsCore는 규칙만 소유하고, 이 노드는 표시와 입력만 담당한다.
 
 const Core = preload("res://modules/tactics/tactics_core.gd")
+const FONT_SOURCE = preload("res://assets/fonts/NotoSansKR-Variable.ttf")
 
 const VIEW_SIZE := Vector2(1280, 720)
 const BOARD_RIGHT := 952.0
@@ -27,6 +28,7 @@ const COLOR_RED := Color("#e06368")
 var state: Dictionary = Core.create_game()
 var reaction_elapsed := 0.0
 var hovered_cell := Vector2i(-1, -1)
+var ui_font: FontVariation
 
 var round_label: Label
 var actor_label: Label
@@ -48,6 +50,9 @@ var reaction_meter: ProgressBar
 
 func _ready() -> void:
 	get_window().title = "RPG GAME 01 · 파랜드풍 전술 코어"
+	ui_font = FontVariation.new()
+	ui_font.base_font = FONT_SOURCE
+	ui_font.variation_opentype = {"wght": 520}
 	_build_interface()
 	_refresh()
 
@@ -94,8 +99,8 @@ func _draw_atmosphere() -> void:
 		draw_circle(Vector2(seed_x, seed_y), 1.2 + float(i % 2), Color(0.62, 0.76, 0.92, alpha))
 	draw_circle(Vector2(120, 205), 150, Color(0.23, 0.18, 0.25, 0.18))
 	draw_circle(Vector2(790, 145), 210, Color(0.12, 0.22, 0.30, 0.16))
-	draw_string(ThemeDB.fallback_font, Vector2(28, 32), "CHAPTER 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, COLOR_GOLD)
-	draw_string(ThemeDB.fallback_font, Vector2(28, 60), "하늘에 남은 문", HORIZONTAL_ALIGNMENT_LEFT, -1, 25, COLOR_TEXT)
+	draw_string(ui_font, Vector2(28, 32), "CHAPTER 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, COLOR_GOLD)
+	draw_string(ui_font, Vector2(28, 60), "하늘에 남은 문", HORIZONTAL_ALIGNMENT_LEFT, -1, 25, COLOR_TEXT)
 
 
 func _draw_board() -> void:
@@ -178,7 +183,7 @@ func _draw_units() -> void:
 		var hp_ratio: float = float(unit["hp"]) / float(unit["max_hp"])
 		draw_rect(Rect2(base + Vector2(-18, 34), Vector2(36 * hp_ratio, 3)), Color("#6ee18a") if unit["team"] == "ally" else COLOR_RED)
 		var name_color := COLOR_CYAN if unit["team"] == "ally" else Color("#f2a2a2")
-		draw_string(ThemeDB.fallback_font, base + Vector2(-36, -29), unit["name"], HORIZONTAL_ALIGNMENT_CENTER, 72, 12, name_color)
+		draw_string(ui_font, base + Vector2(-36, -29), unit["name"], HORIZONTAL_ALIGNMENT_CENTER, 72, 12, name_color)
 
 
 func _draw_reaction_focus() -> void:
@@ -419,6 +424,7 @@ func _label(parent: Node, position: Vector2, size: Vector2, font_size: int, colo
 	var label := Label.new()
 	label.position = position
 	label.size = size
+	label.add_theme_font_override("font", ui_font)
 	label.add_theme_font_size_override("font_size", font_size)
 	label.add_theme_color_override("font_color", color)
 	parent.add_child(label)
@@ -430,6 +436,7 @@ func _button(parent: Node, text: String, position: Vector2, size: Vector2, callb
 	button.text = text
 	button.position = position
 	button.size = size
+	button.add_theme_font_override("font", ui_font)
 	button.add_theme_font_size_override("font_size", 14)
 	button.add_theme_color_override("font_color", COLOR_TEXT)
 	button.pressed.connect(callback)

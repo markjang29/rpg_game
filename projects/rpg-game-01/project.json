@@ -59,8 +59,9 @@
       "route": "/prototype/tactics"
     },
     "godot_tactics_core": {
-      "status": "local_validation_in_progress",
-      "module": "demo/modules/tactics/"
+      "status": "deployed_awaiting_director_feel_review",
+      "module": "demo/modules/tactics/",
+      "route": "https://ip-172-26-2-127.tail1cf879.ts.net:8443/rpg-game/prototype/godot-tactics/"
     }
   },
   "title_may_be_selected_when": "이사님이 핵심 음모와 공개 구조를 승인했을 때"

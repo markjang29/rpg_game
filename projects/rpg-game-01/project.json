@@ -26,6 +26,7 @@
     "walking_resource": "design/walk-prediction-buffer.md",
     "continuity": "design/multiverse-continuity.md",
     "matrix_boundary": "design/matrix-factory-boundary.md",
+    "farland_vertical_slice": "decisions/2026-07-26-farland-chapter-vertical-slice.md",
     "legacy_sources": "legacy-source-map.md",
     "team_boot": "TEAM-BOOT.md",
     "backlog": "BACKLOG.md"
@@ -62,6 +63,12 @@
       "status": "deployed_awaiting_director_feel_review",
       "module": "demo/modules/tactics/",
       "route": "https://ip-172-26-2-127.tail1cf879.ts.net:8443/rpg-game/prototype/godot-tactics/"
+    },
+    "farland_chapter_vertical_slice": {
+      "status": "deployed_awaiting_director_feel_review",
+      "scenario": "demo/modules/tactics/battle_scenario.gd",
+      "director": "demo/modules/tactics/battle_director.gd",
+      "assets": "demo/assets/tactics/chapter01/"
     }
   },
   "title_may_be_selected_when": "이사님이 핵심 음모와 공개 구조를 승인했을 때"

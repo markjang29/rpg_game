@@ -15,6 +15,10 @@ func _run() -> void:
 	root.add_child(battle)
 	await process_frame
 
+	check(battle.director.is_dialogue_active(), "씬 시작 브리핑 대화")
+	check(battle.dialogue_speaker.text == "아리아", "브리핑 첫 화자 표시")
+	battle.director.skip_briefing_for_test()
+	battle.call("_show_dialogue")
 	check(battle.state["phase"] == "move", "씬 시작 이동 단계")
 	battle.call("_handle_board_click", Vector2i(2, 5))
 	check(battle.state["phase"] == "action", "타일 선택 후 행동 단계")

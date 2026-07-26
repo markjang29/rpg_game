@@ -4,7 +4,23 @@ extends Node2D
 ## TacticsCore는 규칙만 소유하고, 이 노드는 표시와 입력만 담당한다.
 
 const Core = preload("res://modules/tactics/tactics_core.gd")
+const Director = preload("res://modules/tactics/battle_director.gd")
+const Scenario = preload("res://modules/tactics/battle_scenario.gd")
 const FONT_SOURCE = preload("res://assets/fonts/NotoSansKR-Variable.ttf")
+const PORTRAIT_TEXTURES := {
+	"aria": preload("res://assets/tactics/chapter01/aria-portrait.png"),
+	"kael": preload("res://assets/tactics/chapter01/kael-portrait.png"),
+	"sena": preload("res://assets/tactics/chapter01/sena-portrait.png"),
+}
+const UNIT_TEXTURES := {
+	"aria": preload("res://assets/tactics/chapter01/aria-unit.png"),
+	"kael": preload("res://assets/tactics/chapter01/kael-unit.png"),
+	"sena": preload("res://assets/tactics/chapter01/sena-unit.png"),
+	"lancer": preload("res://assets/tactics/chapter01/lancer-unit.png"),
+	"rogue": preload("res://assets/tactics/chapter01/rogue-unit.png"),
+	"archer": preload("res://assets/tactics/chapter01/archer-unit.png"),
+	"boss": preload("res://assets/tactics/chapter01/boss-unit.png"),
+}
 
 const VIEW_SIZE := Vector2(1280, 720)
 const BOARD_RIGHT := 952.0
@@ -17,18 +33,24 @@ const PERFECT_START := 1.05
 const PERFECT_END := 1.85
 const GOOD_END := 2.5
 
-const COLOR_BG := Color("#090b12")
-const COLOR_PANEL := Color("#171a26")
-const COLOR_GOLD := Color("#d5b56d")
-const COLOR_TEXT := Color("#e9e4d8")
-const COLOR_MUTED := Color("#9397a7")
-const COLOR_CYAN := Color("#62d9e8")
-const COLOR_RED := Color("#e06368")
+const COLOR_BG := Color("#173153")
+const COLOR_PANEL := Color("#15243d")
+const COLOR_GOLD := Color("#f2ce68")
+const COLOR_TEXT := Color("#fff8e7")
+const COLOR_MUTED := Color("#b7c7dc")
+const COLOR_CYAN := Color("#65e4ee")
+const COLOR_RED := Color("#f26c6f")
 
 var state: Dictionary = Core.create_game()
+var director = Director.new()
 var reaction_elapsed := 0.0
 var hovered_cell := Vector2i(-1, -1)
 var ui_font: FontVariation
+var visual_offsets: Dictionary = {}
+var damage_popup := ""
+var damage_popup_position := Vector2.ZERO
+var damage_popup_alpha := 0.0
+var impact_flash := 0.0
 
 var round_label: Label
 var actor_label: Label
@@ -46,6 +68,13 @@ var prepare_button: Button
 var parry_button: Button
 var restart_button: Button
 var reaction_meter: ProgressBar
+var dialogue_shade: ColorRect
+var dialogue_panel: ColorRect
+var dialogue_portrait: TextureRect
+var dialogue_speaker: Label
+var dialogue_role: Label
+var dialogue_text: Label
+var dialogue_next_button: Button
 
 
 func _ready() -> void:
@@ -54,10 +83,15 @@ func _ready() -> void:
 	ui_font.base_font = FONT_SOURCE
 	ui_font.variation_opentype = {"wght": 520}
 	_build_interface()
+	director.start(Scenario.chapter_01())
+	_show_dialogue()
 	_refresh()
 
 
 func _process(delta: float) -> void:
+	if impact_flash > 0.0:
+		impact_flash = maxf(0.0, impact_flash - delta * 5.0)
+		queue_redraw()
 	if state["phase"] != "reaction":
 		return
 	reaction_elapsed += delta
@@ -68,6 +102,11 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if director.is_dialogue_active():
+		if event.is_action_pressed("ui_accept") or (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed):
+			_on_dialogue_next()
+			get_viewport().set_input_as_handled()
+		return
 	if event is InputEventMouseMotion:
 		hovered_cell = _cell_at_screen(event.position)
 		queue_redraw()
@@ -87,18 +126,25 @@ func _draw() -> void:
 	_draw_atmosphere()
 	_draw_board()
 	_draw_units()
+	_draw_damage_popup()
+	if impact_flash > 0.0:
+		draw_rect(Rect2(Vector2.ZERO, Vector2(BOARD_RIGHT, VIEW_SIZE.y)), Color(1.0, 0.94, 0.67, impact_flash * 0.18))
 	if state["phase"] == "reaction":
 		_draw_reaction_focus()
 
 
 func _draw_atmosphere() -> void:
-	for i in 18:
+	for i in 24:
 		var seed_x := float((i * 137) % 900)
 		var seed_y := float((i * 79) % 620)
-		var alpha := 0.12 + float(i % 4) * 0.04
-		draw_circle(Vector2(seed_x, seed_y), 1.2 + float(i % 2), Color(0.62, 0.76, 0.92, alpha))
-	draw_circle(Vector2(120, 205), 150, Color(0.23, 0.18, 0.25, 0.18))
-	draw_circle(Vector2(790, 145), 210, Color(0.12, 0.22, 0.30, 0.16))
+		var alpha := 0.15 + float(i % 4) * 0.04
+		draw_circle(Vector2(seed_x, seed_y), 1.5 + float(i % 2), Color(0.92, 0.96, 1.0, alpha))
+	draw_circle(Vector2(120, 205), 170, Color(0.50, 0.72, 0.92, 0.12))
+	draw_circle(Vector2(790, 145), 230, Color(0.31, 0.62, 0.76, 0.10))
+	draw_colored_polygon(PackedVector2Array([
+		Vector2(0, 520), Vector2(220, 390), Vector2(430, 520),
+		Vector2(650, 380), Vector2(952, 535), Vector2(952, 720), Vector2(0, 720),
+	]), Color("#11243c"))
 	draw_string(ui_font, Vector2(28, 32), "CHAPTER 01", HORIZONTAL_ALIGNMENT_LEFT, -1, 13, COLOR_GOLD)
 	draw_string(ui_font, Vector2(28, 60), "하늘에 남은 문", HORIZONTAL_ALIGNMENT_LEFT, -1, 25, COLOR_TEXT)
 
@@ -127,11 +173,11 @@ func _draw_board() -> void:
 			if extrusion > 0:
 				draw_colored_polygon(PackedVector2Array([
 					left, bottom, bottom + Vector2(0, extrusion), left + Vector2(0, extrusion)
-				]), Color("#252a32"))
+				]), Color("#40545b"))
 				draw_colored_polygon(PackedVector2Array([
 					right, bottom, bottom + Vector2(0, extrusion), right + Vector2(0, extrusion)
-				]), Color("#343943"))
-			var top_color: Color = [Color("#5b5d59"), Color("#68665d"), Color("#777064")][height]
+				]), Color("#566c68"))
+			var top_color: Color = [Color("#789477"), Color("#91a57e"), Color("#b6aa7f")][height]
 			if cell in move_cells:
 				top_color = top_color.lerp(COLOR_CYAN, 0.48)
 			elif _unit_id_at(cell) in target_ids:
@@ -162,7 +208,8 @@ func _draw_units() -> void:
 			target_ids.append(target["id"])
 	for unit in units:
 		var cell := Vector2i(unit["x"], unit["y"])
-		var base := _cell_to_screen(cell) + Vector2(0, -8)
+		var offset: Vector2 = visual_offsets.get(unit["id"], Vector2.ZERO)
+		var base := _cell_to_screen(cell) + Vector2(0, -8) + offset
 		var is_active: bool = unit["id"] == active_id
 		var is_target: bool = unit["id"] in target_ids
 		draw_set_transform(base + Vector2(0, 8), 0.0, Vector2(1.4, 0.42))
@@ -172,18 +219,34 @@ func _draw_units() -> void:
 			draw_arc(base + Vector2(0, 5), 28, 0, TAU, 40, COLOR_GOLD, 3)
 		if is_target:
 			draw_arc(base + Vector2(0, 5), 31, 0, TAU, 40, COLOR_RED, 4)
-		var unit_color: Color = unit["color"]
-		var cape := PackedVector2Array([
-			base + Vector2(-17, 2), base + Vector2(17, 2),
-			base + Vector2(13, 33), base + Vector2(-15, 33)
-		])
-		draw_colored_polygon(cape, unit_color.darkened(0.22))
-		draw_circle(base + Vector2(0, -7), 13, unit_color.lightened(0.18))
+		var unit_texture: Texture2D = UNIT_TEXTURES.get(unit["id"])
+		if unit_texture:
+			var sprite_size := 128.0 if unit["id"] == "boss" else 112.0
+			draw_texture_rect(
+				unit_texture,
+				Rect2(base + Vector2(-sprite_size * 0.5, 34.0 - sprite_size), Vector2(sprite_size, sprite_size)),
+				false
+			)
 		draw_rect(Rect2(base + Vector2(-19, 33), Vector2(38, 5)), Color("#090a0e"))
 		var hp_ratio: float = float(unit["hp"]) / float(unit["max_hp"])
 		draw_rect(Rect2(base + Vector2(-18, 34), Vector2(36 * hp_ratio, 3)), Color("#6ee18a") if unit["team"] == "ally" else COLOR_RED)
 		var name_color := COLOR_CYAN if unit["team"] == "ally" else Color("#f2a2a2")
 		draw_string(ui_font, base + Vector2(-36, -29), unit["name"], HORIZONTAL_ALIGNMENT_CENTER, 72, 12, name_color)
+
+
+func _draw_damage_popup() -> void:
+	if damage_popup == "" or damage_popup_alpha <= 0.0:
+		return
+	var color := Color(1.0, 0.91, 0.48, damage_popup_alpha)
+	draw_string(
+		ui_font,
+		damage_popup_position,
+		damage_popup,
+		HORIZONTAL_ALIGNMENT_CENTER,
+		120,
+		24,
+		color
+	)
 
 
 func _draw_reaction_focus() -> void:
@@ -266,10 +329,43 @@ func _build_interface() -> void:
 	advisor_copy = _label(layer, Vector2(50, 648), Vector2(840, 38), 15, COLOR_TEXT)
 	advisor_copy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 
+	dialogue_shade = ColorRect.new()
+	dialogue_shade.position = Vector2.ZERO
+	dialogue_shade.size = VIEW_SIZE
+	dialogue_shade.color = Color(0.03, 0.07, 0.14, 0.42)
+	dialogue_shade.mouse_filter = Control.MOUSE_FILTER_STOP
+	layer.add_child(dialogue_shade)
+
+	dialogue_panel = ColorRect.new()
+	dialogue_panel.position = Vector2(38, 438)
+	dialogue_panel.size = Vector2(1204, 238)
+	dialogue_panel.color = Color("#101b32e8")
+	dialogue_shade.add_child(dialogue_panel)
+
+	var dialogue_border := ColorRect.new()
+	dialogue_border.position = Vector2(0, 0)
+	dialogue_border.size = Vector2(8, 238)
+	dialogue_border.color = COLOR_GOLD
+	dialogue_panel.add_child(dialogue_border)
+
+	dialogue_portrait = TextureRect.new()
+	dialogue_portrait.position = Vector2(30, -242)
+	dialogue_portrait.size = Vector2(300, 460)
+	dialogue_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	dialogue_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	dialogue_panel.add_child(dialogue_portrait)
+
+	dialogue_speaker = _label(dialogue_panel, Vector2(338, 24), Vector2(530, 42), 27, COLOR_TEXT)
+	dialogue_role = _label(dialogue_panel, Vector2(340, 66), Vector2(520, 24), 13, COLOR_GOLD)
+	dialogue_text = _label(dialogue_panel, Vector2(340, 104), Vector2(790, 84), 18, COLOR_TEXT)
+	dialogue_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	dialogue_next_button = _button(dialogue_panel, "계속  ▶", Vector2(966, 174), Vector2(200, 42), _on_dialogue_next)
+
 
 func _refresh() -> void:
 	var actor := Core.active_unit(state)
-	round_label.text = "ROUND %d  ·  목표: 검은 성좌 격파" % state["round"]
+	var objective: String = director.scenario.get("objective", "검은 성좌 격파")
+	round_label.text = "ROUND %d  ·  목표: %s" % [state["round"], objective]
 	actor_label.text = actor.get("name", "전투 종료")
 	actor_job_label.text = actor.get("job", "")
 	hp_label.text = "HP %d / %d" % [actor.get("hp", 0), actor.get("max_hp", 0)]
@@ -324,17 +420,26 @@ func _refresh() -> void:
 func _handle_board_click(cell: Vector2i) -> void:
 	match state["phase"]:
 		"move":
+			var actor_before := Core.active_unit(state).duplicate(true)
 			var next := Core.move_active_unit(state, cell)
 			if next != state:
 				state = next
+				var actor_after := Core.active_unit(state)
+				var from_position := _cell_to_screen(Vector2i(actor_before["x"], actor_before["y"]))
+				var to_position := _cell_to_screen(Vector2i(actor_after["x"], actor_after["y"]))
+				_animate_movement(actor_after["id"], from_position - to_position)
 				_refresh()
 		"target":
 			var target_id := _unit_id_at(cell)
 			if target_id != "":
+				var hp_before: int = Core.unit_by_id(state, target_id).get("hp", 0)
 				var next := Core.resolve_player_attack(state, target_id)
 				if next != state:
 					state = next
+					var hp_after: int = Core.unit_by_id(state, target_id).get("hp", 0)
+					_animate_hit(target_id, hp_before - hp_after)
 					_refresh()
+					_observe_story()
 
 
 func _on_attack() -> void:
@@ -376,12 +481,99 @@ func _finish_reaction(forced_grade := "") -> void:
 		grade = "perfect" if reaction_elapsed >= PERFECT_START and reaction_elapsed <= PERFECT_END else ("good" if reaction_elapsed < GOOD_END else "miss")
 	state = Core.resolve_reaction(state, grade)
 	_refresh()
+	_observe_story()
 
 
 func _on_restart() -> void:
 	state = Core.create_game()
 	reaction_elapsed = 0.0
+	visual_offsets.clear()
+	damage_popup = ""
+	director.start(Scenario.chapter_01())
+	_show_dialogue()
 	_refresh()
+
+
+func _on_dialogue_next() -> void:
+	var result := director.advance_dialogue()
+	if result == "line":
+		_show_dialogue()
+		return
+	dialogue_shade.visible = director.is_dialogue_active()
+	if result == "battle":
+		_refresh()
+
+
+func _show_dialogue() -> void:
+	var line := director.current_line()
+	dialogue_shade.visible = not line.is_empty()
+	if line.is_empty():
+		return
+	var speaker_id: String = line.get("speaker_id", "")
+	dialogue_portrait.texture = PORTRAIT_TEXTURES.get(speaker_id)
+	dialogue_speaker.text = line.get("speaker", "")
+	dialogue_role.text = line.get("role", "")
+	dialogue_text.text = line.get("text", "")
+	var is_last_line: bool = director.dialogue_index == director.dialogue_lines.size() - 1
+	if is_last_line and director.return_phase == "battle":
+		dialogue_next_button.text = "전투 시작  ▶" if director.triggered.is_empty() else "전투 복귀  ▶"
+	elif is_last_line and director.return_phase == "complete":
+		dialogue_next_button.text = "챕터 완료  ◆"
+	else:
+		dialogue_next_button.text = "계속  ▶"
+
+
+func _observe_story() -> void:
+	if director.observe_battle(state):
+		_show_dialogue()
+
+
+func _animate_movement(unit_id: String, starting_offset: Vector2) -> void:
+	visual_offsets[unit_id] = starting_offset
+	var tween := create_tween()
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_method(
+		func(weight: float) -> void:
+			visual_offsets[unit_id] = starting_offset.lerp(Vector2.ZERO, weight)
+			queue_redraw(),
+		0.0,
+		1.0,
+		0.34
+	)
+	tween.finished.connect(func() -> void:
+		visual_offsets.erase(unit_id)
+		queue_redraw()
+	)
+
+
+func _animate_hit(target_id: String, damage: int) -> void:
+	if damage <= 0:
+		return
+	var target := Core.unit_by_id(state, target_id)
+	if target.is_empty():
+		return
+	var popup_start := _cell_to_screen(Vector2i(target["x"], target["y"])) + Vector2(-60, -68)
+	damage_popup = "-%d" % damage
+	damage_popup_position = popup_start
+	damage_popup_alpha = 1.0
+	impact_flash = 1.0
+	var tween := create_tween()
+	tween.set_trans(Tween.TRANS_QUAD)
+	tween.set_ease(Tween.EASE_OUT)
+	tween.tween_method(
+		func(weight: float) -> void:
+			damage_popup_alpha = 1.0 - weight
+			damage_popup_position = popup_start + Vector2(0, -34.0 * weight)
+			queue_redraw(),
+		0.0,
+		1.0,
+		0.72
+	)
+	tween.finished.connect(func() -> void:
+		damage_popup = ""
+		queue_redraw()
+	)
 
 
 func _cell_to_screen(cell: Vector2i) -> Vector2:

@@ -97,15 +97,34 @@ godot --headless --export-debug "Android" export/<Module>.apk
 |---|---|---|---|
 | **parry** (패링 손맛) | ✓ 작동·폰 검증 | `modules/parry/` | Perfect/Good/Miss 판정 + 히트스톱·셰이크·파티클·절차 사운드 |
 | **grid_parry** (그리드×패링) | ✓ 작동·폰 검증 | `modules/grid_parry/` | 5×6 그리드 턴 전술 + telegraph 예고 + 패링. `shared/` FX·SFX 재사용 첫 사례 |
-| **reasoning** (추론×전술) ⭐ | 🔨 진행 | `modules/reasoning/` | **시그니처 모듈**: 참모 추론 보고서 + 전제(목표함수) 토글 + 토큰 3단계 + 패링(손). `grid_parry` 위에 추론 레이어 얹음 (B안, `ideation/08` 참조) |
-| walk (걷기=재화) | 예정 | — | 3겹 캡, 입장 재화 (컨셉 수렴参照) |
-| color-dye (색 염색) | 예정 | — | 마비노기풍 표현층, 전투력 0 기여 |
-| territory (영토PvP) | 예정 | — | 진영 분기 (서사는 재검토 중) |
+| **reasoning** (추론×전술) ⭐ | 🔨 진행 | `modules/reasoning/` | **시그니처 모듈**: 참모 추론 보고서 + 전제 토글 + 토큰 3단계 + 패링 (`design/combat-observation-system.md`) |
+| **duel_advance** (진검승부) | 🔄 설계 | (예정 `modules/`) | 사무라이 진검승부 한 판(Walk-to-Play). 간보기/버티기 + 결정 + 패링 + 참모 칩 UI |
+| walk (걷기→예측 버퍼) | 🟡 예정 | — | Walk-to-Play — 걷기→'실수할 시간' (`design/walk-prediction-buffer.md`) |
+| color-dye (색 염색) | 🟡 예정 | — | 마비노기풍 표현층, 전투력 0 기여 |
+| territory (영토PvP) | 🟡 예정 | — | 진영 분기 — 서사는 `design/faction-by-philosophy.md`(철학 선택→MBTI 진영) |
 | romance (로맨스) | 예정 | — | |
 
 ---
 
-## 5. 협업 규칙 (기존 README와 동일)
+## 5. 시나리오 독립 마일스톤 (정본 재확정 2026-07-26)
+
+메커니즘 층(시나리오 자산 불필요)과 본편 조립 층(시나리오 의존)을 분리. 시나리오팀 속도와 무관하게 메커니즘은 진행.
+
+**메커니즘 층 — 시나리오 대기 없이 진행**
+- **M1. 핵심 손맛 모듈** — parry·grid_parry 폰 검증 ✅
+- **M2. 시그니처 모듈** — reasoning(추론×패막, `design/combat-observation-system.md`) 폰 검증 🔨
+- **M3. Walk-to-Play 결합** — duel_advance(진검승부, `design/walk-prediction-buffer.md`) 폰 검증 🔄
+- **M4. 표현층** — color-dye(색염색) + 절차 에셋 🟡
+
+**본편 조립 층 — 시나리오·이사님 체감 필요**
+- **M5. 본편 통합 씬** — 캐릭터·대사·씬 서사 결합. 시나리오 리뉴얼 완료 + 이사님 체감·승인 후 착수.
+- ★ 시나리오 의존 산출물(세계관·캐릭터 인스턴스·`SCENARIO-REQUEST`·`DRAFT`/`WIP`)은 리뉴얼 전 수정 보류 (이사님 2026-07-11 시나리오 잠금).
+
+> **"M1~M4(메커니즘)는 시나리오 대기 없이 간다. M5(본편)만 시나리오·이사님 체감 의존."**
+
+---
+
+## 6. 협업 규칙 (기존 README와 동일)
 
 - 작업 전 `git pull`, 작업 후 즉시 `add/commit/push` (Windows 에이전트와 repo 공유).
 - 커밋 메시지: 변경 명확히 (한국어 OK).

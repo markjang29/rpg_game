@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11121a">
+  <title>파편전기 — 등각 전술 체감판</title>
+  <link rel="stylesheet" href="/static/tactics.css">
+</head>
+<body>
+  <main class="tactics-app">
+    <header class="tactics-head">
+      <div>
+        <p class="kicker">RPG GAME 01 · TACTICAL SLICE</p>
+        <h1>파편전기 <small>부유 유적의 봉인</small></h1>
+      </div>
+      <div class="battle-meta">
+        <span>ROUND <b id="round">1</b></span>
+        <span>OBJECTIVE <b>검은 성좌 격파</b></span>
+      </div>
+    </header>
+
+    <section class="battle-frame">
+      <div class="battlefield" id="battlefield" aria-label="등각 전술 전장">
+        <img class="battle-bg" src="/static/assets/tactics/sky-ruins-battlefield.png" alt="">
+        <div class="vignette"></div>
+        <div id="grid-layer" class="grid-layer"></div>
+        <div id="unit-layer" class="unit-layer"></div>
+        <div id="effect-layer" class="effect-layer"></div>
+        <div class="map-title">
+          <span>CHAPTER 01</span>
+          <strong>하늘에 남은 문</strong>
+        </div>
+        <div class="advisor" id="advisor">
+          <div class="advisor-gem">M</div>
+          <div>
+            <span>전술 안내자 MIRA</span>
+            <p id="advisor-copy">석조 바닥의 높이와 적의 시선을 함께 읽으세요.</p>
+          </div>
+        </div>
+        <button id="parry-button" class="parry-button" hidden>
+          <span>지금!</span><b>패링</b>
+        </button>
+        <div id="reaction-meter" class="reaction-meter" hidden>
+          <i></i><em></em>
+        </div>
+      </div>
+
+      <aside class="side-panel">
+        <section class="turn-card">
+          <p class="panel-label">행동 중</p>
+          <div id="active-portrait" class="portrait"></div>
+          <h2 id="active-name"></h2>
+          <p id="active-job"></p>
+          <div class="hp-line"><i id="active-hp-bar"></i></div>
+          <span id="active-hp"></span>
+        </section>
+
+        <section class="command-panel">
+          <p class="panel-label">명령</p>
+          <div id="commands" class="commands"></div>
+          <p id="command-hint" class="command-hint"></p>
+        </section>
+
+        <section class="battle-log">
+          <p class="panel-label">전황</p>
+          <p id="battle-log">부유 유적에 진입했다.</p>
+        </section>
+      </aside>
+    </section>
+
+    <footer class="timeline-wrap">
+      <span class="panel-label">TURN ORDER</span>
+      <div id="timeline" class="timeline"></div>
+      <button id="restart-tactics" class="restart">전투 재시작</button>
+    </footer>
+  </main>
+
+  <div class="ending-layer" id="ending-layer" hidden>
+    <div>
+      <p class="kicker">BATTLE COMPLETE</p>
+      <h2 id="ending-heading">부유 유적의 봉인이 해제됐다</h2>
+      <p>전술 구조와 패링의 결합을 확인했습니다.</p>
+      <button id="ending-restart">다시 싸운다</button>
+    </div>
+  </div>
+  <script type="module" src="/static/tactics.js"></script>
+</body>
+</html>

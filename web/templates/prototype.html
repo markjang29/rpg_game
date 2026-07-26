@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b11">
+  <title>잔향 기록 — 관찰형 추론 전투</title>
+  <link rel="stylesheet" href="/static/prototype.css">
+</head>
+<body>
+  <main class="game-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">RPG GAME 01 · PLAYABLE CORE</p>
+        <h1>잔향 기록</h1>
+      </div>
+      <div class="status-row" aria-label="전투 상태">
+        <span>생명 <b id="hp">●●●</b></span>
+        <span>적의 균열 <b id="enemy-hp">□□□□</b></span>
+        <span>예측 버퍼 <b id="buffer">1</b></span>
+      </div>
+    </header>
+
+    <section class="scene" id="scene">
+      <div class="fog fog-a"></div>
+      <div class="fog fog-b"></div>
+      <div class="enemy" id="enemy">
+        <span class="enemy-halo"></span>
+        <span class="enemy-body"></span>
+        <span class="enemy-blade"></span>
+      </div>
+      <div class="player" id="player"><span></span></div>
+      <div class="lanes" aria-hidden="true">
+        <i></i><i></i><i></i>
+      </div>
+      <div class="scene-copy">
+        <p id="chapter" class="chapter"></p>
+        <h2 id="enemy-name"></h2>
+        <p id="tell" class="tell"></p>
+      </div>
+    </section>
+
+    <section class="command">
+      <div class="phase-tabs" aria-label="전투 단계">
+        <span data-phase="observe">01 관찰</span>
+        <span data-phase="decide">02 판단</span>
+        <span data-phase="result">03 학습</span>
+      </div>
+
+      <article class="advisor-card" id="advisor-card">
+        <div class="advisor-head">
+          <div>
+            <p class="eyebrow">불완전한 안내자 · MIRA</p>
+            <h3 id="prediction-title">관찰을 기다리는 중</h3>
+          </div>
+          <span class="confidence" id="confidence">--%</span>
+        </div>
+        <div id="report" class="report"></div>
+        <div id="deep-report" class="deep-report" hidden></div>
+      </article>
+
+      <div class="controls" id="controls">
+        <button class="primary" id="observe-btn">관찰 결과 해석</button>
+      </div>
+      <p class="hint" id="hint">숫자가 아니라 근거를 읽으십시오. AI는 때때로 확신에 차서 틀립니다.</p>
+    </section>
+
+    <aside class="history">
+      <p class="eyebrow">공동 학습 기록</p>
+      <div id="history-list" class="history-list"><span>아직 기록이 없습니다.</span></div>
+    </aside>
+  </main>
+
+  <div class="ending" id="ending" hidden>
+    <div class="ending-card">
+      <p class="eyebrow">복원 판정</p>
+      <h2 id="ending-title"></h2>
+      <p id="ending-copy"></p>
+      <div id="ending-stats" class="ending-stats"></div>
+      <button id="restart-btn" class="primary">기록을 다시 읽는다</button>
+    </div>
+  </div>
+
+  <script type="module" src="/static/prototype.js"></script>
+</body>
+</html>

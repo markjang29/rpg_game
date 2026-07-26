@@ -37,6 +37,16 @@ def index():
     }
     return render_template('index.html', sections=sections)
 
+@app.route('/prototype')
+def prototype():
+    """관찰·추론·회피 전투의 플레이 가능한 웹 프로토타입."""
+    return render_template('prototype.html')
+
+@app.route('/prototype/tactics')
+def tactics_prototype():
+    """파랜드풍 등각 전술 전투 체감 프로토타입."""
+    return render_template('tactics.html')
+
 @app.route('/static/<path:filename>')
 def static_files(filename):
     """정적 파일 제공"""

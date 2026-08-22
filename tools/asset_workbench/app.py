@@ -72,6 +72,14 @@ TYPES = {
                  "clean minimal, centered, dark background, mobile game interface asset"),
         "neg": "human, cluttered, text, letters, logo, watermark",
     },
+    "EFX": {
+        "label": "이펙트(VFX)",
+        "size": (1024, 1024),
+        "base": ("masterpiece, best quality, very aesthetic, game VFX concept art, single skill effect, "
+                 "energy burst, glowing slash trail, particle effects, dark background, "
+                 "skill effect design sheet, RPG combat special effect"),
+        "neg": "human, character, face, text, logo, watermark, cluttered",
+    },
 }
 
 STYLES = {

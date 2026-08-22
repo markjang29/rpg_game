@@ -46,6 +46,22 @@ button.sm{background:#12202e;color:var(--ac);border:1px solid var(--ac);border-r
   <div class="types" id="types"></div>
   <div class="lbl">② 렌더 스타일 (도트 여부 미결정 — 언제든 전환)</div>
   <div class="styles" id="styles"></div>
+  <div id="profWrap" style="display:none">
+    <div class="lbl">프로필 (별도 파일 관리 — 성격 태그가 포즈·성향에 반영)</div>
+    <div class="row">
+      <select id="profSel" class="seed" style="width:170px"><option value="">프로필 없음</option></select>
+      <input class="seed" id="profName" placeholder="새 프로필 이름" style="width:120px">
+      <input class="seed" id="profTags" placeholder="태그: 소심,냉정" style="width:130px">
+      <button class="sm" onclick="saveProf()">저장</button>
+    </div>
+  </div>
+  <div id="uiWrap" style="display:none">
+    <div class="lbl">UI 하위 · 테마</div>
+    <div class="row">
+      <select id="uiSub" class="seed" style="width:170px"></select>
+      <select id="uiTheme" class="seed" style="width:120px"></select>
+    </div>
+  </div>
   <div class="lbl">③ 추가 지시 (분위기·팔레트·디테일 — 영어 키워드 권장)</div>
   <textarea id="extra" placeholder="예: frost sorceress, ice crystals, pale blue palette, flowing robe"></textarea>
   <div class="row" style="margin-top:10px">
@@ -73,17 +89,48 @@ const KEY = new URLSearchParams(location.search).get('k') || '';
 const H = {'X-Key': KEY, 'Content-Type': 'application/json'};
 let TYPE = localStorage.getItem('wb_type') || 'CHR';
 let STYLE = localStorage.getItem('wb_style') || 'illust';
-let TYPES = {}, STYLES = {};
+let TYPES = {}, STYLES = {}, EMOTIONS = {}, GAZES = {}, UI_SUBS = {}, THEMES = {}, PROFILES = {};
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3500)}
 
 async function initTypes(){
   const r = await fetch('/api/types', {headers: H});
   const d = await r.json();
-  TYPES = d.types; STYLES = d.styles;
+  TYPES = d.types; STYLES = d.styles; EMOTIONS = d.emotions; GAZES = d.gazes;
+  UI_SUBS = d.ui_subs; THEMES = d.themes;
   if(!TYPES[TYPE]) TYPE = Object.keys(TYPES)[0];
   if(!STYLES[STYLE]) STYLE = Object.keys(STYLES)[0];
   renderPicks();
+  document.getElementById('uiSub').innerHTML = Object.entries(UI_SUBS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+  document.getElementById('uiTheme').innerHTML = Object.entries(THEMES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+  loadProfiles();
+  const pr = await fetch('/api/profiles', {headers: H});
+  PROFILES = (await pr.json()).profiles || {};
+  renderProfSel();
+}
+async function loadProfiles(){
+  const pr = await fetch('/api/profiles', {headers: H});
+  PROFILES = (await pr.json()).profiles || {};
+  renderProfSel();
+}
+function renderProfSel(){
+  const sel = document.getElementById('profSel');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">프로필 없음</option>' +
+    Object.entries(PROFILES).map(([k,v])=>`<option value="${k}">${v.name} (${(v.tags||[]).join(',')})</option>`).join('');
+  if(cur) sel.value = cur;
+}
+async function saveProf(){
+  const name = document.getElementById('profName').value.trim();
+  const tags = document.getElementById('profTags').value.trim();
+  const core = document.getElementById('extra').value.trim();
+  if(!name || !core){toast('프로필 이름과 ③ 추가지시(코어)가 필요합니다');return}
+  const r = await fetch('/api/profiles',{method:'POST',headers:H,body:JSON.stringify({name,tags,prompt_core:core})});
+  const d = await r.json();
+  if(!r.ok){toast('실패: '+(d.error||r.status));return}
+  PROFILES = d.profiles; renderProfSel();
+  document.getElementById('profSel').value = d.key;
+  toast('프로필 저장: '+d.key);
 }
 function renderPicks(){
   document.getElementById('types').innerHTML = Object.entries(TYPES).map(([k,v]) =>
@@ -91,7 +138,9 @@ function renderPicks(){
   document.getElementById('styles').innerHTML = Object.entries(STYLES).map(([k,v]) =>
     `<div class="tbtn ${k===STYLE?'on':''}" onclick="setS('${k}')">${v.label}</div>`).join('');
 }
-function setT(k){TYPE=k;localStorage.setItem('wb_type',k);renderPicks()}
+function setT(k){TYPE=k;localStorage.setItem('wb_type',k);renderPicks();
+  document.getElementById('profWrap').style.display = (k==='CHR')?'block':'none';
+  document.getElementById('uiWrap').style.display = (k==='UI')?'block':'none';}
 function setS(k){STYLE=k;localStorage.setItem('wb_style',k);renderPicks()}
 
 async function generate(){
@@ -101,6 +150,8 @@ async function generate(){
     const body={type:TYPE, style:STYLE, extra:document.getElementById('extra').value};
     const s=document.getElementById('seed').value;
     if(s) body.seed=parseInt(s);
+    if(TYPE==='CHR' && document.getElementById('profSel').value) body.profile=document.getElementById('profSel').value;
+    if(TYPE==='UI'){ body.ui_kind=document.getElementById('uiSub').value; body.theme=document.getElementById('uiTheme').value; }
     const r=await fetch('/api/generate',{method:'POST',headers:H,body:JSON.stringify(body)});
     const d=await r.json();
     if(!r.ok) throw new Error(d.error||r.status);
@@ -108,6 +159,15 @@ async function generate(){
     loadGallery();
   }catch(e){toast('실패: '+e.message)}
   go.disabled=false;document.getElementById('stat').textContent='';
+}
+
+async function variant(id, kind, val){
+  toast('변형 생성 중…');
+  const r=await fetch('/api/variant',{method:'POST',headers:H,body:JSON.stringify({id,kind,value:val})});
+  const d=await r.json();
+  if(!r.ok){toast('실패: '+(d.error||r.status));return}
+  toast(d.id+' 변형 완료 — '+d.variant);
+  loadGallery();
 }
 
 async function reroll(id){
@@ -133,6 +193,17 @@ async function loadGallery(){
 async function detail(id){
   const r=await fetch('/api/gallery',{headers:H});
   const m=(await r.json()).items.find(x=>x.id===id)||{};
+  const isChr = m.type==='CHR' && !m.variant;
+  const varBtns = isChr ? `
+    <div class="lbl">감정 변형 (같은 시드 — 구도 유지, 표정만 변화)</div>
+    <div class="row">${Object.entries(EMOTIONS).map(([k,v])=>`<button class="sm" onclick="variant('${m.id}','emotion','${k}')">${v}</button>`).join('')}</div>
+    <div class="lbl">시선 변형 (공격 분류 연결: 위=상단 · 정면=중단 · 아래=하단)</div>
+    <div class="row">${Object.entries(GAZES).map(([k,v])=>`<button class="sm" onclick="variant('${m.id}','gaze','${k}')">${v}</button>`).join('')}</div>` : '';
+  const extras = [
+    m.variant?`<b>변형</b> ${m.variant}`:'',
+    m.profile_ref?`<b>프로필</b> ${m.profile_ref} (별도 파일)`:'',
+    m.ui_kind?`<b>UI 하위</b> ${m.ui_kind}${m.theme?' · '+m.theme:''}`:'',
+  ].filter(Boolean).join('<br>');
   document.getElementById('dbox').innerHTML=`
     <div class="row" style="justify-content:space-between">
       <b style="font-size:16px">${m.id} <span style="color:var(--dim);font-weight:400">(${m.type_label}·${m.style})</span></b>
@@ -142,15 +213,17 @@ async function detail(id){
     <div class="kv">
       <b>seed</b> ${m.seed} · <b>모델</b> ${m.model} · <b>크기</b> ${m.size} · <b>생성</b> ${m.ts}<br>
       <b>계보</b> ${m.parent?('← '+m.parent):'(원본)'} · <b>상태</b> ${m.status}<br>
+      ${extras?extras+'<br>':''}
       <b>추가지시</b> ${m.extra||'-'}<br>
       <b>prompt</b> ${m.prompt}
     </div>
-    <div class="row" style="margin-top:10px"><button class="sm" onclick="reroll('${m.id}')">이 프롬프트로 리롤</button></div>`;
+    <div class="row" style="margin-top:10px"><button class="sm" onclick="reroll('${m.id}')">이 프롬프트로 리롤</button></div>
+    ${varBtns}`;
   document.getElementById('dlg').classList.add('on');
 }
 
 document.getElementById('go').onclick=generate;
-initTypes();loadGallery();
+initTypes().then(()=>setT(TYPE));loadGallery();
 </script>
 </body>
 </html>

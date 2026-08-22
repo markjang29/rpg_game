@@ -88,6 +88,67 @@ STYLES = {
     "paint": {"label": "핸드페인팅", "suffix": "hand-painted, gouache texture, soft brush strokes"},
 }
 
+# ── 감정·시선 변형 (TRPG MASTER 감정 초상화 + 우리 눈 인터페이스 연결) ──
+# 시선 = 공격 분류(상/중/하단) 대응: 위=상단, 정면=중단, 아래=하단
+EMOTIONS = {
+    "neutral": {"label": "기본", "kw": "neutral expression"},
+    "angry": {"label": "분노", "kw": "angry expression, furrowed brows"},
+    "fear": {"label": "공포", "kw": "fearful expression, wide eyes"},
+    "smile": {"label": "미소", "kw": "gentle smile"},
+    "surprise": {"label": "놀람", "kw": "surprised expression, open mouth"},
+}
+GAZES = {
+    "up": {"label": "시선 위(상단)", "kw": "looking upward"},
+    "forward": {"label": "시선 정면(중단)", "kw": "looking forward at viewer"},
+    "down": {"label": "시선 아래(하단)", "kw": "looking downward"},
+}
+
+# ── UI 하위 프리셋 (파티 상태창 2.2v + RPGM 루프 조사 반영) ──
+UI_SUBS = {
+    "status": {"label": "상태창(HP·스탯)", "kw": "status window UI, HP MP bars, character stat panel"},
+    "battlelog": {"label": "전투 로그", "kw": "battle log panel UI, scrolling combat message window"},
+    "dice": {"label": "주사위·판정", "kw": "dice roll result UI, d20 panel, judgement check window"},
+    "shop": {"label": "상점 메뉴", "kw": "shop menu UI, item price list, gold counter display"},
+    "quest": {"label": "퀘스트 보드", "kw": "quest board UI, quest list with difficulty stars, reward text"},
+}
+THEMES = {
+    "classic": {"label": "클래식", "kw": "slate gray and mint color palette"},
+    "paper": {"label": "페이퍼", "kw": "aged paper texture, gold accents, vintage journal style"},
+    "jade": {"label": "제이드", "kw": "deep jade green palette, mystic glow"},
+    "sanctus": {"label": "산크투스", "kw": "ink black and silver monochrome palette"},
+}
+
+# ── 캐릭터 프로필 — 별도 파일 관리 (이사님 2026-08-23 지시: 메타에 넣지 않음) ──
+PROFILES_DIR = ROOT / "profiles"
+PROFILES_DIR.mkdir(exist_ok=True)
+# 성격 태그 → 프롬프트 효과 매핑 (조사: "소심=회피율↑" 원칙)
+TAG_EFFECTS = {
+    "소심": "cautious stance, light-footed, evasion-focused",
+    "용맹": "confident stance, aggressive posture",
+    "냉정": "calm composed demeanor",
+    "장난": "playful mischievous vibe",
+    "충직": "loyal steadfast presence",
+    "음침": "gloomy ominous aura",
+}
+
+def load_profiles() -> dict:
+    out = {}
+    for f in PROFILES_DIR.glob("*.json"):
+        try:
+            out[f.stem] = json.loads(f.read_text())
+        except Exception:
+            pass
+    return out
+
+def save_profile(name: str, tags: list, prompt_core: str) -> str:
+    safe = "".join(c for c in name.strip() if c.isalnum() or c in "_-가-힣 ")[:30].replace(" ", "_")
+    if not safe:
+        raise ValueError("프로필 이름이 필요합니다")
+    data = {"name": name.strip(), "tags": tags, "prompt_core": prompt_core.strip(),
+            "ts": time.strftime("%Y-%m-%d %H:%M:%S")}
+    (PROFILES_DIR / f"{safe}.json").write_text(json.dumps(data, ensure_ascii=False, indent=1))
+    return safe
+
 BASE_NEG = ("lowres, artistic error, film grain, scan artifacts, worst quality, low quality, "
             "jpeg artifacts, blurry, signature")
 
@@ -130,7 +191,9 @@ def next_id(tcode: str) -> str:
 
 
 def save_asset(tcode: str, style: str, extra: str, prompt: str, negative: str,
-               seed: int, parent: str | None) -> dict:
+               seed: int, parent: str | None, variant: str | None = None,
+               profile_ref: str | None = None, ui_kind: str | None = None,
+               theme: str | None = None) -> dict:
     w, h = TYPES[tcode]["size"]
     png = nai_generate(prompt, negative, w, h, seed)
     aid = next_id(tcode)
@@ -143,6 +206,14 @@ def save_asset(tcode: str, style: str, extra: str, prompt: str, negative: str,
         "ts": time.strftime("%Y-%m-%d %H:%M:%S"), "parent": parent,
         "status": "초안",
     }
+    if variant:
+        meta["variant"] = variant
+    if profile_ref:
+        meta["profile_ref"] = profile_ref  # 성격·프로필은 별도 파일(profiles/) — 메타엔 참조만
+    if ui_kind:
+        meta["ui_kind"] = ui_kind
+    if theme:
+        meta["theme"] = theme
     (STORE / f"{aid}.json").write_text(json.dumps(meta, ensure_ascii=False, indent=1))
     return meta
 
@@ -194,7 +265,14 @@ class Handler(BaseHTTPRequestHandler):
             self._send(200, INDEX.read_bytes(), "text/html; charset=utf-8")
         elif path == "/api/types":
             self._json(200, {"types": {k: {"label": v["label"]} for k, v in TYPES.items()},
-                             "styles": {k: {"label": v["label"]} for k, v in STYLES.items()}})
+                             "styles": {k: {"label": v["label"]} for k, v in STYLES.items()},
+                             "emotions": {k: v["label"] for k, v in EMOTIONS.items()},
+                             "gazes": {k: v["label"] for k, v in GAZES.items()},
+                             "ui_subs": {k: v["label"] for k, v in UI_SUBS.items()},
+                             "themes": {k: v["label"] for k, v in THEMES.items()},
+                             "tag_effects": TAG_EFFECTS})
+        elif path == "/api/profiles":
+            self._json(200, {"profiles": load_profiles()})
         elif path == "/api/gallery":
             self._json(200, {"items": gallery()})
         elif path.startswith("/img/"):
@@ -229,11 +307,64 @@ class Handler(BaseHTTPRequestHandler):
                     style = "illust"
                 extra = str(body.get("extra", ""))[:500]
                 seed = int(body.get("seed") or random.randint(0, 2**31 - 1)) % (2**31)
-                prompt = ", ".join(x for x in [TYPES[tcode]["base"], extra,
-                                               STYLES[style]["suffix"]] if x)
+                parts = [TYPES[tcode]["base"]]
+                profile_ref = None
+                # 캐릭터 프로필 주입 (별도 파일 → 프롬프트 합성, 메타엔 참조만)
+                if tcode == "CHR" and body.get("profile"):
+                    profs = load_profiles()
+                    prof = profs.get(body["profile"])
+                    if prof:
+                        profile_ref = body["profile"]
+                        parts.append(prof["prompt_core"])
+                        for t in prof.get("tags", []):
+                            if t in TAG_EFFECTS:
+                                parts.append(TAG_EFFECTS[t])
+                # UI 하위 프리셋 + 테마
+                ui_kind = body.get("ui_kind") if tcode == "UI" else None
+                if ui_kind and ui_kind in UI_SUBS:
+                    parts.append(UI_SUBS[ui_kind]["kw"])
+                theme = body.get("theme") if tcode in ("UI",) else None
+                if theme and theme in THEMES:
+                    parts.append(THEMES[theme]["kw"])
+                parts.append(extra)
+                parts.append(STYLES[style]["suffix"])
+                prompt = ", ".join(x for x in parts if x)
                 negative = BASE_NEG + ", " + TYPES[tcode]["neg"]
-                meta = save_asset(tcode, style, extra, prompt, negative, seed, None)
+                meta = save_asset(tcode, style, extra, prompt, negative, seed, None,
+                                  profile_ref=profile_ref, ui_kind=ui_kind, theme=theme)
                 self._json(200, meta)
+            elif path == "/api/variant":
+                src = body.get("id", "")
+                kind, value = body.get("kind", ""), body.get("value", "")
+                f = STORE / f"{src}.json"
+                if not f.exists():
+                    self._json(404, {"error": "자산 없음"})
+                    return
+                if kind == "emotion" and value in EMOTIONS:
+                    kw, label = EMOTIONS[value]["kw"], f"감정:{EMOTIONS[value]['label']}"
+                elif kind == "gaze" and value in GAZES:
+                    kw, label = GAZES[value]["kw"], f"시선:{GAZES[value]['label']}"
+                else:
+                    self._json(400, {"error": "알 수 없는 변형"})
+                    return
+                m = json.loads(f.read_text())
+                if m.get("variant"):  # 변형의 변형 금지 — 원본 기준
+                    self._json(400, {"error": "변형의 변형은 불가 — 원본에서 실행하세요"})
+                    return
+                prompt = m["prompt"] + ", " + kw
+                meta = save_asset(m["type"], m["style"], m.get("extra", ""), prompt,
+                                  m["negative"], m["seed"], src, variant=label,
+                                  profile_ref=m.get("profile_ref"))
+                self._json(200, meta)
+            elif path == "/api/profiles":
+                name = str(body.get("name", ""))[:30]
+                tags = [t.strip() for t in str(body.get("tags", "")).split(",") if t.strip()][:5]
+                core = str(body.get("prompt_core", ""))[:500]
+                if not name or not core:
+                    self._json(400, {"error": "이름과 프롬프트 코어가 필요합니다"})
+                    return
+                key = save_profile(name, tags, core)
+                self._json(200, {"key": key, "profiles": load_profiles()})
             elif path == "/api/reroll":
                 src = body.get("id", "")
                 f = STORE / f"{src}.json"

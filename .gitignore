@@ -42,3 +42,4 @@ web/venv/
 web/server.log
 __pycache__/
 *.pyc
+tools/asset_workbench/store/

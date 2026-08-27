@@ -225,5 +225,5 @@ async function detail(id){
 document.getElementById('go').onclick=generate;
 initTypes().then(()=>setT(TYPE));loadGallery();
 </script>
-<script src="http://13.125.131.126:8015/dbg_badge.js?site=G"></script></body>
+</body>
 </html>

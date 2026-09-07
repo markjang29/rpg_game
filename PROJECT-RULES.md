@@ -68,6 +68,40 @@
 - 현황판: `http://43.201.34.144/hub` (홈 이전 후 동일 경로).
 - 폴링 봇 전환은 단계적 — 기존 @멘션 방식과 당분간 병행.
 
+## 7. 상시 답장 규칙 (모든 답장에 포함) — 정본 ORG-RULES §6 미러
+
+- **모델·컨텍스트 사용량 표기**: 모든 답장에 사용 모델명과 컨텍스트 사용량을 붙인다.
+  수치는 실측(context-meter 스크립트) 기준이고, 추정 수치를 쓰지 않는다.
+- **사용 경로 구분**: LLM Gateway 경유인지 **z.ai API 직접**인지 구분해 표기한다.
+  - aws-rpg 기본값: **z.ai API(GLM)** — actors.json `runtime_accounting` = client_surface claude /
+    usage_pool z.ai / usage_source runtime_measured_only. 변경되면 등록 원장을 따라 표기를 바꾼다.
+- **모델 변경·API 사용 요청 대응**: 요청을 받으면 ①현재 경로·모델 실측값 제시 → ②변경안
+  (actors.json providers·runtime_accounting 갱신 + 재기동 절차)을 이사님 확인 후 적용한다.
+  임의로 모델·경로를 바꾸지 않는다.
+- **숙지한 규칙 정본의 마지막 commit 표기**: 답장에 (1) notes origin/main HEAD, (2) 이 repo
+  `PROJECT-RULES.md` 커밋을 붙인다. 갱신 요청 시 `git fetch` 후 재인증한다.
+- **관제 주시**: 관제 현황판(`http://43.201.34.144/hub`)과 허브 메시지·공지를 주시한다.
+  ※ 선행 조건: 봇별 허브 토큰 발급(현재 미발급 — 발급 전엔 주시 불가, 이를 blocked로 보고).
+
+## 8. rpg 원페이지 이관 계획 (2026-09-08 초안)
+
+담당 페이지의 엣지(:80 하위) 이관 목표 — 프록시 자체는 매니저·관제(codex_dev) 소관,
+rpg 쪽은 **경로 확정 + base-path 대응**이 내 몫.
+
+- **게임 웹 (포트 8009)** — `web/`(Flask) + `deploy/rpg-game-8009.service`,
+  배포 트리 `/home/ubuntu/apps/rpg-game-01/current`.
+  목표: `http://43.201.34.144/rpg/game/` (현 엣지 경로 없음 — 포트 직접 진입은 폐기 원칙)
+- **자산 워크벤치 (포트 8017)** — `tools/asset_workbench/`(표준라이브러리 단독 서버).
+  목표: `http://43.201.34.144/rpg/workbench/`. 전제: app.py에 base-path(`/rpg/workbench/`)
+  대응 수정 + 접속키 유지 + 서비스 재기동(현재 중단 상태).
+- **Godot 데모 빌드** — `demo/`(export 산출물) 정적 공개.
+  목표: `http://43.201.34.144/rpg/demo/` (선택 — 빌드물 있을 때만)
+- **이관 대상 아님**: `projects/rpg-game-01/`(정본), `ideation/` — 페이지가 아니라 Git 정본.
+  필요하면 읽기 전용 뷰어만 투영한다.
+- **git 전수 확인 (2026-09-08)**: 내 소관 = `rpg_game`(커밋·push 완료, clean) +
+  notes 내 티켓 산출물(push 완료). notes의 나머지·scenario·autotrader·approval-board는
+  각 소유자(매니저·타 팀장)가 이관 계획을 세운다.
+
 ## rpg_game 적용 체크
 
 - 워크벤치·게임 주소 안내는 엣지 경로 기준으로 통일하고, 미프록시 서비스는 현황을 관제에 기록.

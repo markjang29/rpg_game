@@ -13,6 +13,7 @@ from pathlib import Path
 app = Flask(__name__)
 
 CONTENT_DIR = Path(__file__).parent / "content"
+GODOT_TACTICS_DIR = Path(__file__).parent / "static" / "godot-tactics"
 
 def load_markdown_content(filename):
     """마크다운 파일을 읽어서 HTML로 변환"""
@@ -46,6 +47,16 @@ def prototype():
 def tactics_prototype():
     """파랜드풍 등각 전술 전투 체감 프로토타입."""
     return render_template('tactics.html')
+
+@app.route('/prototype/godot-tactics/')
+def godot_tactics_prototype():
+    """Godot Web Export 전술 전투 프로토타입."""
+    return send_from_directory(GODOT_TACTICS_DIR, 'index.html')
+
+@app.route('/prototype/godot-tactics/<path:filename>')
+def godot_tactics_files(filename):
+    """Godot Web Export의 WASM/PCK/JS 파일 제공."""
+    return send_from_directory(GODOT_TACTICS_DIR, filename)
 
 @app.route('/static/<path:filename>')
 def static_files(filename):

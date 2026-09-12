@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
-<head>
+<head><meta name="site-id" content="8017"><meta name="implemented-with" content="Python stdlib · HTML/JS (RELAY-36 스파이크)">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RPG 자산 워크벤치 — RELAY-36 프로토타입</title>
@@ -37,7 +37,7 @@ button.sm{background:#12202e;color:var(--ac);border:1px solid var(--ac);border-r
 .empty{color:var(--dim);text-align:center;padding:30px;font-size:13px}
 </style>
 </head>
-<body>
+<body><div data-matrix-crumb data-obj-id="8017-crumb" data-impl="8017:Python stdlib · HTML/JS" style="position:sticky;top:0;z-index:99999;background:#0b1220;color:#cfe0ff;border-bottom:1px solid #2a3a5a;padding:6px 10px;font:700 11.5px/1.5 system-ui,sans-serif"><a href="http://43.201.34.144:8024/" style="color:#9fc5ff;text-decoration:none">🏠 홈</a> › <a href="http://43.201.34.144:8024/flow" style="color:#9fc5ff;text-decoration:none">그림·이미지</a> › <a href="http://43.201.34.144/open/8017" style="color:#9fc5ff;text-decoration:none">RPG 에셋 워크벤치</a> · <span style="color:#93a2bd">기술 Python stdlib · HTML/JS</span> · <span style="color:#93a2bd">ID 8017</span><span class="mcrumb-path" style="color:#6d7a92;font-weight:400"></span></div><script>(function(){var e=document.querySelector("[data-matrix-crumb] .mcrumb-path");if(e){e.textContent=" · 페이지 "+location.pathname;}})();</script>
 <h1>RPG 자산 워크벤치</h1>
 <div class="sub">RELAY-36 프로토타입 스파이크 · NAI Opus 무료 사이즈 · 생성물은 WB- 임시번호</div>
 
@@ -52,7 +52,7 @@ button.sm{background:#12202e;color:var(--ac);border:1px solid var(--ac);border-r
       <select id="profSel" class="seed" style="width:170px"><option value="">프로필 없음</option></select>
       <input class="seed" id="profName" placeholder="새 프로필 이름" style="width:120px">
       <input class="seed" id="profTags" placeholder="태그: 소심,냉정" style="width:130px">
-      <button class="sm" onclick="saveProf()">저장</button>
+      <button data-obj-id="8017-button-001" data-impl="8017:Python stdlib · HTML/JS" class="sm" onclick="saveProf()"저장</button>
     </div>
   </div>
   <div id="uiWrap" style="display:none">
@@ -66,7 +66,7 @@ button.sm{background:#12202e;color:var(--ac);border:1px solid var(--ac);border-r
   <textarea id="extra" placeholder="예: frost sorceress, ice crystals, pale blue palette, flowing robe"></textarea>
   <div class="row" style="margin-top:10px">
     <input class="seed" id="seed" type="number" placeholder="시드(비우면 랜덤)">
-    <button class="go" id="go">생성</button>
+    <button data-obj-id="8017-button-002" data-impl="8017:Python stdlib · HTML/JS" class="go" id="go"생성</button>
     <span id="stat" style="font-size:12px;color:var(--dim)"></span>
   </div>
 </div>
@@ -74,7 +74,7 @@ button.sm{background:#12202e;color:var(--ac);border:1px solid var(--ac);border-r
 <div class="panel">
   <div class="row" style="justify-content:space-between;margin-bottom:8px">
     <b style="font-size:14px">갤러리</b>
-    <button class="sm" onclick="loadGallery()">새로고침</button>
+    <button data-obj-id="8017-button-003" data-impl="8017:Python stdlib · HTML/JS" class="sm" onclick="loadGallery()"새로고침</button>
   </div>
   <div class="grid" id="grid"><div class="empty">아직 자산이 없습니다 — 위에서 생성해보세요</div></div>
 </div>
@@ -186,7 +186,7 @@ async function loadGallery(){
   if(!d.items.length){g.innerHTML='<div class="empty">아직 자산이 없습니다</div>';return}
   g.innerHTML=d.items.map(m=>`<div class="item">
     <img src="/img/${m.id}.png?k=${KEY}" loading="lazy" onclick="detail('${m.id}')">
-    <div class="meta"><span class="aid">${m.id}</span><span>${m.type_label}·${m.seed}</span><button class="sm" onclick="reroll('${m.id}')">리롤</button></div>
+    <div class="meta"><span class="aid">${m.id}</span><span>${m.type_label}·${m.seed}</span><button data-obj-id="8017-button-004" data-impl="8017:Python stdlib · HTML/JS" class="sm" onclick="reroll('${m.id}')"리롤</button></div>
   </div>`).join('');
 }
 
@@ -196,9 +196,9 @@ async function detail(id){
   const isChr = m.type==='CHR' && !m.variant;
   const varBtns = isChr ? `
     <div class="lbl">감정 변형 (같은 시드 — 구도 유지, 표정만 변화)</div>
-    <div class="row">${Object.entries(EMOTIONS).map(([k,v])=>`<button class="sm" onclick="variant('${m.id}','emotion','${k}')">${v}</button>`).join('')}</div>
+    <div class="row">${Object.entries(EMOTIONS).map(([k,v])=>`<button data-obj-id="8017-button-005" data-impl="8017:Python stdlib · HTML/JS" class="sm" onclick="variant('${m.id}','emotion','${k}')"${v}</button>`).join('')}</div>
     <div class="lbl">시선 변형 (공격 분류 연결: 위=상단 · 정면=중단 · 아래=하단)</div>
-    <div class="row">${Object.entries(GAZES).map(([k,v])=>`<button class="sm" onclick="variant('${m.id}','gaze','${k}')">${v}</button>`).join('')}</div>` : '';
+    <div class="row">${Object.entries(GAZES).map(([k,v])=>`<button data-obj-id="8017-button-006" data-impl="8017:Python stdlib · HTML/JS" class="sm" onclick="variant('${m.id}','gaze','${k}')"${v}</button>`).join('')}</div>` : '';
   const extras = [
     m.variant?`<b>변형</b> ${m.variant}`:'',
     m.profile_ref?`<b>프로필</b> ${m.profile_ref} (별도 파일)`:'',
@@ -207,7 +207,7 @@ async function detail(id){
   document.getElementById('dbox').innerHTML=`
     <div class="row" style="justify-content:space-between">
       <b style="font-size:16px">${m.id} <span style="color:var(--dim);font-weight:400">(${m.type_label}·${m.style})</span></b>
-      <button class="sm" onclick="document.getElementById('dlg').classList.remove('on')">닫기</button>
+      <button data-obj-id="8017-button-007" data-impl="8017:Python stdlib · HTML/JS" class="sm" onclick="document.getElementById('dlg').classList.remove('on')"닫기</button>
     </div>
     <img src="/img/${m.id}.png?k=${KEY}">
     <div class="kv">
@@ -217,7 +217,7 @@ async function detail(id){
       <b>추가지시</b> ${m.extra||'-'}<br>
       <b>prompt</b> ${m.prompt}
     </div>
-    <div class="row" style="margin-top:10px"><button class="sm" onclick="reroll('${m.id}')">이 프롬프트로 리롤</button></div>
+    <div class="row" style="margin-top:10px"><button data-obj-id="8017-button-008" data-impl="8017:Python stdlib · HTML/JS" class="sm" onclick="reroll('${m.id}')"이 프롬프트로 리롤</button></div>
     ${varBtns}`;
   document.getElementById('dlg').classList.add('on');
 }

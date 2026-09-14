@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: rpg-webapp
+
+server:
+  # 운영: 8009 승계(전환기에만 병행, 스위치는 관제 승인). 테스트: --server.port=8031 오버라이드.
+  port: 8009
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+rpg:
+  # 8009 Flask와 동일한 단일 소스(복사 없이 참조) — RELAY-64 자산 정합.
+  # 배포 시 정적자산과 함께 절대경로 하드코딩을 피하려면 실행 디렉터리 기준 상대로 두고
+  # 운영에서는 환경변수 RPG_CONTENT_DIR로만 오버라이드한다(시크릿 아님, 기록 대상 아님).
+  content-dir: ${RPG_CONTENT_DIR:../web/content}
+  workbench-dir: ${RPG_WORKBENCH_DIR:../tools/asset_workbench}

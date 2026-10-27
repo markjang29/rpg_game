@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "kind": "sprite-gen-unpack-source",
+  "layout_source": "imported-pngs",
+  "cell": {
+    "width": 256,
+    "height": 384
+  },
+  "source_dir": "/home/smlime21/projects/rpg_game/.claude/skills/sprite-atlas-local/poc/cells",
+  "files": [
+    "f1.png",
+    "f2.png",
+    "f3.png",
+    "f4.png"
+  ],
+  "labels": [
+    "f1",
+    "f2",
+    "f3",
+    "f4"
+  ],
+  "groups": [
+    "walk"
+  ],
+  "base_source": null,
+  "imported_refs": {}
+}

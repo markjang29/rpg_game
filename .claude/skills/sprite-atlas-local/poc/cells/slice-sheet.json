@@ -1,0 +1,134 @@
+{
+  "kind": "sprite-gen-slice-sheet",
+  "version": 1,
+  "sheet": "test-sheet.png",
+  "grid": [
+    2,
+    2
+  ],
+  "canvas": {
+    "w": 256,
+    "h": 384
+  },
+  "baseline_y": 350.0,
+  "target_height": 320.0,
+  "scale": "cell",
+  "fit": "none",
+  "factor": null,
+  "factor_from": null,
+  "alpha_cleanup": null,
+  "cells": [
+    {
+      "name": "f1",
+      "file": "f1.png",
+      "factor": 1.4349775784753362,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 81,
+          "h": 223
+        },
+        "canvas": {
+          "w": 116,
+          "h": 320
+        }
+      },
+      "box": {
+        "x": 71,
+        "y": 0,
+        "w": 116,
+        "h": 420
+      },
+      "anchor": [
+        129.0,
+        420.0
+      ],
+      "clipped_px": 2520,
+      "parts": 2
+    },
+    {
+      "name": "f2",
+      "file": "f2.png",
+      "factor": 1.4349775784753362,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 81,
+          "h": 223
+        },
+        "canvas": {
+          "w": 116,
+          "h": 320
+        }
+      },
+      "box": {
+        "x": 71,
+        "y": 0,
+        "w": 116,
+        "h": 420
+      },
+      "anchor": [
+        129.0,
+        420.0
+      ],
+      "clipped_px": 2520,
+      "parts": 2
+    },
+    {
+      "name": "f3",
+      "file": "f3.png",
+      "factor": 1.5238095238095237,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 81,
+          "h": 210
+        },
+        "canvas": {
+          "w": 123,
+          "h": 320
+        }
+      },
+      "box": {
+        "x": 67,
+        "y": 0,
+        "w": 123,
+        "h": 427
+      },
+      "anchor": [
+        128.5,
+        427.0
+      ],
+      "clipped_px": 3182,
+      "parts": 2
+    },
+    {
+      "name": "f4",
+      "file": "f4.png",
+      "factor": 1.4414414414414414,
+      "factor_from": "target_height",
+      "subject": {
+        "sheet": {
+          "w": 81,
+          "h": 222
+        },
+        "canvas": {
+          "w": 117,
+          "h": 320
+        }
+      },
+      "box": {
+        "x": 70,
+        "y": 0,
+        "w": 117,
+        "h": 421
+      },
+      "anchor": [
+        128.5,
+        421.0
+      ],
+      "clipped_px": 2516,
+      "parts": 2
+    }
+  ]
+}

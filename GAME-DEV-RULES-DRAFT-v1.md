@@ -1,8 +1,12 @@
-# 게임개발 사칙 초안 v1 (2026-10-27) — 승인 대기
+# 게임개발 사칙 v1 (2026-10-27 제정 · 2026-11-02 발효)
 
-- 성격: **초안**. 이사님 10-27 확정("superpowers는 절차만 게임개발 사칙으로 재작성")에 따른 재작성안.
-- 승인 전에는 아래 조항이 기존 사칙(notes L0 부팅·PROJECT-RULES·Agent Mail)을 대체·제한하지 않는다.
-- 승인 시 notes `principles/` 로 승격 여부는 이사님·매니저가 정한다(원장: notes `016f4cb`).
+- 성격: **발효됨**. 이사님 10-27 확정("superpowers는 절차만 게임개발 사칙으로 재작성")에 따른 재작성안.
+- 승인 근거: 승인보드 `rpg-skill-fusion-2026-10-27` status=approved — approval-board
+  `c11d13ff4b745b837b6c9cf9ffc1d4fec5a7ca34` (이사님 11-02 승인, 매니저 기록).
+  격리 POC 운용 확정과 함께 본 사칙 v1이 발효됐다.
+- 조직 공통 사칙(notes L0 부팅·PROJECT-RULES·Agent Mail)은 그대로 유효하며,
+  본 사칙은 게임개발 절차(설계→구현→검증)에 적용된다.
+- notes `principles/` 승격 여부는 별도 안건(매니저 준비)으로 본 발효와 분리해서 정한다(원장: notes `016f4cb`).
 - 차용 원천: obra/superpowers `2ce8aa15` — **절차 사상만** 재작성, 원문 미복사·의존 없음.
 
 ## 0. 한 줄 원칙
@@ -59,5 +63,10 @@ superpowers의 "MUST use before any creative work" 강제 문구는 채택하지
 ## 6. 상태
 
 - 초안 작성: 2026-10-27 aws-rpg (스킬 융합 4-a단)
-- 승인보드 후보 등록: 별도 안건(pending)
-- 승인 후 발효. 개정은 이사님 확인을 거친다.
+- 승인보드 후보 등록: 2026-10-27 `rpg-skill-fusion-2026-10-27` (approval-board `d5bb1e3`)
+- 승인·발효: 2026-11-02 이사님 — `rpg-skill-fusion-2026-10-27` status=approved
+  (approval-board `c11d13ff4b745b837b6c9cf9ffc1d4fec5a7ca34`, 매니저 기록).
+  격리 POC 운용 확정·게임개발 사칙 v1 발효.
+- 파일명의 `DRAFT`는 승인보드 등록 당시 이름 보존(발효 후에도 파일명 불변, 기존 refs 보존).
+- notes principles 승격: 별도 안건 대기(매니저 준비) — 본 사칙 발효와 무관하게 진행.
+- 개정은 이사님 확인을 거친다.

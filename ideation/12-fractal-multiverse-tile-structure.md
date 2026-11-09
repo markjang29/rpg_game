@@ -39,7 +39,7 @@
 ## 3. 기존 자산과의 정합 (무복제 · 단일소스 원칙 유지)
 
 - **파편전기**: '파편'이라는 명칭이 이미 세계 조각 의미 — 멀티버스 프레임으로 명칭 그대로 승격 가능.
-  새 이름·새 시스템을 만들지 않는다(`web-react/src/apps-main.jsx` PLAYABLE 라벨 그대로).
+  새 이름·새 시스템을 만들지 않는다(`webapp/web-react/src/apps-main.jsx` PLAYABLE 라벨 그대로).
 - **패리 / grid_parry**: L0 타일의 전투 동사. 프레임 판정 구조가 타일 문법의 최소 실증 사례.
 - **관찰·추론 모듈(wip)**: 타일 연결 규칙의 '발견'을 담당 — L0→L1 사다리.
 - **첫 보스 1턴 인스턴스**(`DRAFT-first-boss-one-turn-instance.md`): L1 세계의 최소 검증판.

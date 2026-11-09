@@ -11,6 +11,9 @@
 2. notes `projects/agent-ops/conversation-rules-v1.md` — 대화·소통 규칙
 3. notes `projects/agent-ops/policy-index-v1.json` — 정책 인덱스(주소·문서 원장)
 4. notes `projects/agent-ops/gwanje-hub-rest-queue-v1.md` — 관제 허브 v1 정본
+5. notes `principles/delegation-loop.md` — 업무 위임 루프 공통 사칙 (2026-11-10 채택, commit `89ff476` ·
+   합류절차 notes `projects/agent-ops/enrollment/README.md` · 캠페인 DL-20261110-01 ·
+   aws-rpg 등록요청 논리 ID `DL-20261110-01:aws-rpg` — 작업 시작 때 적용 버전 대조)
 
 ## 1. 진입점 — 문은 43.201.34.144 하나
 

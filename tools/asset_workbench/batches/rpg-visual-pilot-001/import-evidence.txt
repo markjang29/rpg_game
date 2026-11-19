@@ -1,0 +1,10 @@
+== GET /studio/assets ==
+HTTP 200 text/html;charset=UTF-8 580B
+<title>RPG 자산 — /studio/assets</title>
+== GET /api/studio/assets/gallery ==
+count: 14 | site-id: 8017
+WB entries: ['WB-EFX-001', 'WB-EFX-002', 'WB-EFX-003', 'WB-EFX-004', 'WB-EFX-005', 'WB-ITM-001', 'WB-ITM-002', 'WB-ITM-003', 'WB-ITM-004', 'WB-WLD-001', 'WB-WLD-002', 'WB-WPN-001', 'WB-WPN-002', 'WB-WPN-003']
+== GET /studio/assets/img/WB-EFX-001.png ==
+HTTP 200 image/png 1199036B
+933487f3b829c30a
+933487f3b829c30a

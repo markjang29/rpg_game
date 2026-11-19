@@ -1,0 +1,266 @@
+{
+  "schema_version": 1,
+  "batch_id": "RPG-VISUAL-PILOT-001",
+  "status": "prepared_not_generated",
+  "scope": "draft visual candidates; no canonical characters, world facts, mechanics or production promotion",
+  "source_contract": {
+    "repository": "markjang29/rpg_game",
+    "commit": "cf443a01a707d4efadef3c6cbe1393ccced96731",
+    "path": "tools/asset_workbench/app.py",
+    "endpoint": "POST /api/generate",
+    "model": "nai-diffusion-4-5-full"
+  },
+  "budget": {
+    "initial_requests": 12,
+    "max_corrective_requests": 6,
+    "concurrency": 1,
+    "paid_anlas_allowed": false,
+    "automatic_quota_reset_allowed": false
+  },
+  "target": {
+    "technically_valid_candidates": 6,
+    "runtime_import_proofs": 1
+  },
+  "jobs": [
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-01",
+      "slot": "parry-ring",
+      "label": "패링 성공 효과",
+      "status": "prepared",
+      "request": {
+        "type": "EFX",
+        "style": "illust",
+        "extra": "a single compact mint-white circular impact ring with four sharp silver sparks, clean readable parry feedback symbol, no explosion cloud",
+        "seed": 26111901
+      },
+      "review_checks": [
+        "64px에서 방어막·참격과 구별",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-02",
+      "slot": "guard-shield",
+      "label": "방어 효과",
+      "status": "prepared",
+      "request": {
+        "type": "EFX",
+        "style": "illust",
+        "extra": "a single translucent jade shield silhouette with a thin silver rim, clear intact protective outline, no letters or runes",
+        "seed": 26111902
+      },
+      "review_checks": [
+        "패링 링과 다른 폐곡선 실루엣",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-03",
+      "slot": "slash-arc",
+      "label": "참격 효과",
+      "status": "prepared",
+      "request": {
+        "type": "EFX",
+        "style": "illust",
+        "extra": "a single silver crescent slash arc sweeping diagonally from lower left to upper right, mint trailing edge, restrained particles",
+        "seed": 26111903
+      },
+      "review_checks": [
+        "하나의 주동작 방향, 프레임 경계 잘림 없음",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-04",
+      "slot": "recovery-pulse",
+      "label": "회복 효과",
+      "status": "prepared",
+      "request": {
+        "type": "EFX",
+        "style": "illust",
+        "extra": "three soft concentric mint light ripples with a small silver central glow, calm restorative effect, no cross symbol",
+        "seed": 26111904
+      },
+      "review_checks": [
+        "공격 효과보다 부드러운 형태, 가독성",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-05",
+      "slot": "frost-orb",
+      "label": "냉기 오브 후보",
+      "status": "prepared",
+      "request": {
+        "type": "ITM",
+        "style": "illust",
+        "extra": "a single faceted pale blue ice orb with a small crystalline snowflake core, silver setting, simple strong silhouette",
+        "seed": 26111905
+      },
+      "review_checks": [
+        "다른 오브와 색·형태 모두 구별",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-06",
+      "slot": "ember-orb",
+      "label": "불씨 오브 후보",
+      "status": "prepared",
+      "request": {
+        "type": "ITM",
+        "style": "illust",
+        "extra": "a single warm amber orb with one small flame-shaped core, silver setting, simple strong silhouette",
+        "seed": 26111906
+      },
+      "review_checks": [
+        "냉기와 흑백 축소에서도 형태 구별",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-07",
+      "slot": "venom-vial",
+      "label": "독 상태 아이콘 후보",
+      "status": "prepared",
+      "request": {
+        "type": "ITM",
+        "style": "illust",
+        "extra": "one small triangular glass vial containing muted violet liquid, silver stopper, no label, clear simple outline",
+        "seed": 26111907
+      },
+      "review_checks": [
+        "글자 없이 판독 가능한 단일 물체",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-08",
+      "slot": "restoration-flask",
+      "label": "회복 아이템 후보",
+      "status": "prepared",
+      "request": {
+        "type": "ITM",
+        "style": "illust",
+        "extra": "one round glass flask containing mint liquid, silver neck and rounded cork, no label, clear simple outline",
+        "seed": 26111908
+      },
+      "review_checks": [
+        "독 병과 다른 윤곽, 이름·효과 수치 없음",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-09",
+      "slot": "training-court",
+      "label": "전투 연습장 후보",
+      "status": "prepared",
+      "request": {
+        "type": "WLD",
+        "style": "illust",
+        "extra": "an unoccupied slate stone training courtyard, distant low silver railings, restrained mint lamps, clear uncluttered central combat space occupying the middle half, no banners, no writing",
+        "seed": 26111909
+      },
+      "review_checks": [
+        "중앙 전투영역 비움, 기존 세계관 사실 추가 없음",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-10",
+      "slot": "camp-clearing",
+      "label": "대기 장면 후보",
+      "status": "prepared",
+      "request": {
+        "type": "WLD",
+        "style": "illust",
+        "extra": "an unoccupied quiet woodland clearing at dusk, slate stones and subdued jade foliage, small warm lantern at the edge, open uncluttered center, no buildings, no writing",
+        "seed": 26111910
+      },
+      "review_checks": [
+        "중앙 UI 배치 여백, 로고·텍스트 없음",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-11",
+      "slot": "plain-training-blade",
+      "label": "연습 무기 후보",
+      "status": "prepared",
+      "request": {
+        "type": "WPN",
+        "style": "illust",
+        "extra": "one plain unbranded silver training sword, slate leather grip, restrained mint reflection, the entire sword visible with margin, no engraving, no magical runes",
+        "seed": 26111911
+      },
+      "review_checks": [
+        "그립·칼끝 포함, 특정 인물 소유 설정 없음",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    },
+    {
+      "job_id": "RPG-VISUAL-PILOT-001-12",
+      "slot": "round-training-buckler",
+      "label": "연습 방패 후보",
+      "status": "prepared",
+      "request": {
+        "type": "WPN",
+        "style": "illust",
+        "extra": "one simple circular slate training buckler with a silver rim and small mint central boss, entire object visible with margin, no heraldry or lettering",
+        "seed": 26111912
+      },
+      "review_checks": [
+        "전체 윤곽 포함, 검과 가독성 차이",
+        "출력 파일 실재·열림·크기 확인",
+        "모델·seed·prompt·sha256 기록",
+        "독립 시각 검수; 생성 성공을 채택으로 간주하지 않음"
+      ],
+      "artifact_ref": null,
+      "review_ref": null
+    }
+  ]
+}

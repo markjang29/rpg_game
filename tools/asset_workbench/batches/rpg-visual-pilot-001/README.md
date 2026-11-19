@@ -1,6 +1,6 @@
 # RPG-VISUAL-PILOT-001: 첫 RPG 시각 자산 생산 묶음
 
-상태: 요청 12건 준비 / NAI 생성 미실행 / 게임 반입 미실행.
+상태: 실행 완료(2026-11-19) — 12+2(보정) 생성 / 후보 6 선별 / 격리 화면 반입 증거 확보. 상세는 results.json.
 기존 워크벤치의 실제 /api/generate 입력 계약을 사용한다. 신규 생성 서비스나 게임 메커니즘을 추가하지 않는다.
 
 ## 목표와 범위
@@ -44,3 +44,13 @@ python3 tools/asset_workbench/batches/rpg-visual-pilot-001/validate.py
 - tools/asset_workbench/app.py: TYPES/STYLES와 /api/generate 처리
 - ideation/DRAFT-matrix-scenario-factory-request.md: 서사와 전투 분리, 초안과 정식 채택 분리
 - https://docs.novelai.net/en/subscription/ : Opus 무료 생성 조건(실행 시 최신 계정 조건 확인)
+
+
+## 실행 결과 (2026-11-19, aws-manager)
+
+- 생성 12+보정 2(무료 조건 내, 유료 Anlas 0) — 전 파일 PNG 유효·seed 메타 일치.
+- 독립 비전 검수(GLM-4.5V 2패스+개별): 기술 유효 8 → 후보 6(01·05·06·07·08·11) + 예비 2(03·04).
+- 불합격 4: 02·12 같은원인 2회 보정 실패로 blocked(검·삼지창 모티프 침투), 09·10 가독성·구도.
+- 격리 반입: /studio/assets(8031 테스트 오버라이드) 갤러리 14항목 + 이미지 라우트 sha256 일치.
+  픽셀 스크린샷은 호스트 무브라우저로 blocked — 근거는 import-evidence.txt.
+- 정식 채택·운영 배포는 미실행(별도 결정 대기). 증거: results.json, results-preview.png.

@@ -1,0 +1,201 @@
+{
+ "batch_id": "RPG-VISUAL-PILOT-001",
+ "executed_at": "2026-11-19",
+ "executors": {
+  "generation": "aws-manager via 8017 workbench POST /api/generate",
+  "independent_visual_review": "GLM-4.5V vision model (2-pass: 256px sheet + 64px sheet + per-image)",
+  "technical_check": "local script rpg_pilot_qc.py"
+ },
+ "free_condition_evidence": {
+  "subscription_tier": "Opus (tier 3), active=true (image.novelai.net /user/subscription 2026-11-19)",
+  "params": "nai-diffusion-4-5-full, steps=28, n_samples=1, max 832x1216 — Opus 무료 조건 내",
+  "paid_anlas_spent": 0,
+  "corrective_requests_used": 2,
+  "corrective_budget": 6
+ },
+ "counts": {
+  "generated_initial": 12,
+  "generated_corrective": 2,
+  "png_valid": 12,
+  "seed_meta_match": 12,
+  "technically_valid": 8,
+  "selected_candidates": 6,
+  "reserve": 2,
+  "rejected": 2,
+  "blocked": 2
+ },
+ "jobs": {
+  "-01": {
+   "job_id": "RPG-VISUAL-PILOT-001-01",
+   "wb_id": "WB-EFX-001",
+   "slot": "parry-ring",
+   "seed": 26111901,
+   "size": "1024x1024",
+   "sha256": "933487f3b829c30a10eec41500499dc71f58a2f0bbcb2b0e1a3c08d1c3283e12",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "candidate",
+   "review_reason": "패링 링 — 합격, 64px 식별성 우수",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-02": {
+   "job_id": "RPG-VISUAL-PILOT-001-02",
+   "wb_id": "WB-EFX-005",
+   "slot": null,
+   "seed": 26111913,
+   "size": "1024x1024",
+   "sha256": "613d09be3cf159ae68b9f1dbfd19ac224289574efcb640b9fc5b1400005a1bd0",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "rejected_blocked",
+   "review_reason": "보정 2회 모두 검 도상 침투 — 동일원인 2회 실패로 blocked",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-03": {
+   "job_id": "RPG-VISUAL-PILOT-001-03",
+   "wb_id": "WB-EFX-003",
+   "slot": "slash-arc",
+   "seed": 26111903,
+   "size": "1024x1024",
+   "sha256": "3e136274fbfd14dce10676421f8ee110fd063c9b65d6f99ec05621dd18ea0375",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "reserve",
+   "review_reason": "참격 아크 — 형태 합격, 은색→청록 색 편차로 예비",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-04": {
+   "job_id": "RPG-VISUAL-PILOT-001-04",
+   "wb_id": "WB-EFX-004",
+   "slot": "recovery-pulse",
+   "seed": 26111904,
+   "size": "1024x1024",
+   "sha256": "7307b9b121c73aff80dab9ab1d6ccc49505b12834faf197b4625a67be2d01107",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "reserve",
+   "review_reason": "회복 파동 — 형태 합격, 64px에서 01과 원형 유사로 예비",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-05": {
+   "job_id": "RPG-VISUAL-PILOT-001-05",
+   "wb_id": "WB-ITM-001",
+   "slot": "frost-orb",
+   "seed": 26111905,
+   "size": "1024x1024",
+   "sha256": "04d92ffe7c228b93efdebcf4fd3dc7760240f6a03dd443c88b8911aa121728ae",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "candidate",
+   "review_reason": "냉기 오브 — 합격, 담청 보조색 식별 양호",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-06": {
+   "job_id": "RPG-VISUAL-PILOT-001-06",
+   "wb_id": "WB-ITM-002",
+   "slot": "ember-orb",
+   "seed": 26111906,
+   "size": "1024x1024",
+   "sha256": "ef961414e262a821119be51d79de3cb0dafcca99b2b0b6dc1c8a39c84c2324cf",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "candidate",
+   "review_reason": "불씨 오브 — 합격, 호박색 대비 우수(랜턴형 해석은 사용처 노트)",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-07": {
+   "job_id": "RPG-VISUAL-PILOT-001-07",
+   "wb_id": "WB-ITM-003",
+   "slot": "venom-vial",
+   "seed": 26111907,
+   "size": "1024x1024",
+   "sha256": "6b213d801d37dcbebd6bd80d680c5eab2c464e1174a8995d92b11ddf6cab8fd2",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "candidate",
+   "review_reason": "독 비니얼 — 합격, 보라 보조색으로 플라스크와 색 구별",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-08": {
+   "job_id": "RPG-VISUAL-PILOT-001-08",
+   "wb_id": "WB-ITM-004",
+   "slot": "restoration-flask",
+   "seed": 26111908,
+   "size": "1024x1024",
+   "sha256": "1246df9dd2d5842d853730ebfa5b6c7620509b26797b894492d817506d6e2c35",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "candidate",
+   "review_reason": "회복 플라스크 — 합격, 민트 액체·실루엣 명확",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-09": {
+   "job_id": "RPG-VISUAL-PILOT-001-09",
+   "wb_id": "WB-WLD-001",
+   "slot": "training-court",
+   "seed": 26111909,
+   "size": "832x1216",
+   "sha256": "6947b2a4258fea4c07388459f2e444c1d0b77ea0a373157931b0ffedaca6015b",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "rejected",
+   "review_reason": "연습장 — 실내/실외 애매·난잡으로 가독성 부족",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-10": {
+   "job_id": "RPG-VISUAL-PILOT-001-10",
+   "wb_id": "WB-WLD-002",
+   "slot": "camp-clearing",
+   "seed": 26111910,
+   "size": "832x1216",
+   "sha256": "1727801c254200f5345baed7ac5e6951f89bed2e901b6c301de4ef770b10ef0f",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "rejected",
+   "review_reason": "야영지 — 계단 오솔길으로 반입지 아님(초안 보존)",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-11": {
+   "job_id": "RPG-VISUAL-PILOT-001-11",
+   "wb_id": "WB-WPN-001",
+   "slot": "plain-training-blade",
+   "seed": 26111911,
+   "size": "832x1216",
+   "sha256": "ea5dfa4a4d9f0c46a43210e7d28cca06cf9eb36daef0bdccb3f964d368308d57",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "candidate",
+   "review_reason": "연습 검 — 합격, 결함 없음",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  },
+  "-12": {
+   "job_id": "RPG-VISUAL-PILOT-001-12",
+   "wb_id": "WB-WPN-003",
+   "slot": null,
+   "seed": 26111914,
+   "size": "832x1216",
+   "sha256": "5060af7b191a653eb2ab0f5bb11e4d69e29b0df3aba341fb61e824561867bd1e",
+   "actual_model": "nai-diffusion-4-5-full",
+   "review_status": "rejected_blocked",
+   "review_reason": "버클러 — 2회 모두 삼지창·검 융합 오브젝트, blocked",
+   "reviewer": "GLM-4.5V independent pass + aws-manager compile"
+  }
+ },
+ "corrective_attempts": [
+  {
+   "job_id": "RPG-VISUAL-PILOT-001-02",
+   "attempt": 1,
+   "note": "인물·검 제거, 방패 단독 강화",
+   "wb_id": "WB-EFX-005",
+   "seed": 26111913,
+   "review_status": "rejected",
+   "review_reason": "독립 비전 검수 재판정 불합격(검·삼지창 모티프 잔존)"
+  },
+  {
+   "job_id": "RPG-VISUAL-PILOT-001-12",
+   "attempt": 1,
+   "note": "삼지창 오류 정정, 원형 방패 강조",
+   "wb_id": "WB-WPN-003",
+   "seed": 26111914,
+   "review_status": "rejected",
+   "review_reason": "독립 비전 검수 재판정 불합격(검·삼지창 모티프 잔존)"
+  }
+ ],
+ "runtime_import": {
+  "screen": "/studio/assets (isolated Spring webapp, test port 8031 override)",
+  "page": "HTTP 200 text/html — 격리 화면 라우트 정상",
+  "gallery": "count 14 — 배치 12+보정 2 전량 카탈로그 반입(8017-WB-* obj-id)",
+  "image_route": "/studio/assets/img/WB-EFX-001.png HTTP 200 image/png, sha256 스토어 원본과 일치(933487f3b829c30a...)",
+  "pixel_screenshot": "blocked — 호스트에 헤드리스 브라우저 없음(chromium/firefox/wkhtmltoimage 부재). 현재 화면 카드는 텍스트형이며 이미지 라우트는 별도 제공.",
+  "formal_adoption": "별도 결정 대기(의도대로 미실행)"
+ }
+}
